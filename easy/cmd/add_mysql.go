@@ -3,10 +3,10 @@ package cmd
 import (
 	"os"
 
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/conf"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/file"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/generate"
 	"github.com/urfave/cli/v2"
+	"github.com/weblazy/easy-cli/easy/conf"
+	"github.com/weblazy/easy-cli/easy/file"
+	"github.com/weblazy/easy-cli/easy/generate"
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

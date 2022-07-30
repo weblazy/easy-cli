@@ -6,12 +6,12 @@ import (
 	"os/exec"
 	"runtime"
 
-	//_ "github.com/sunmi-OS/gocore/v2/tools/gocore/ui/statik"
+	//_ "github.com/weblazy/easy-cli/easy/ui/statik"
 
 	"github.com/maxence-charriere/go-app/v8/pkg/app"
 	"github.com/rakyll/statik/fs"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/ui/view"
 	"github.com/urfave/cli/v2"
+	"github.com/weblazy/easy-cli/easy/ui/view"
 	"github.com/zserge/lorca"
 )
 

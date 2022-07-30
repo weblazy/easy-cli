@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/spf13/cast"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/conf"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/def"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/file"
+	"github.com/weblazy/easy-cli/easy/conf"
+	"github.com/weblazy/easy-cli/easy/def"
+	"github.com/weblazy/easy-cli/easy/file"
 )
 
 var writer = file.NewWriter()

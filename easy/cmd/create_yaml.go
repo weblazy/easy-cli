@@ -4,9 +4,9 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/conf"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/file"
 	"github.com/urfave/cli/v2"
+	"github.com/weblazy/easy-cli/easy/conf"
+	"github.com/weblazy/easy-cli/easy/file"
 	"gopkg.in/yaml.v2"
 )
 

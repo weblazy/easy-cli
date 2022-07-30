@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/google/uuid"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/conf"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/file"
+	"github.com/weblazy/easy-cli/easy/conf"
+	"github.com/weblazy/easy-cli/easy/file"
 )
 
 func createPostman(root, name string, commonHeaders []conf.Header, apis []conf.Api) {

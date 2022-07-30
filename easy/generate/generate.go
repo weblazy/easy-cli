@@ -3,8 +3,8 @@ package generate
 import (
 	"strings"
 
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/conf"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/def"
+	"github.com/weblazy/easy-cli/easy/conf"
+	"github.com/weblazy/easy-cli/easy/def"
 	"gorm.io/gorm"
 )
 

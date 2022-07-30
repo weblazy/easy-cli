@@ -4,10 +4,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/cmd"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/conf"
 	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/urfave/cli/v2"
+	"github.com/weblazy/easy-cli/easy/cmd"
+	"github.com/weblazy/easy-cli/easy/conf"
 )
 
 func main() {

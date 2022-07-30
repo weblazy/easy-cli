@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/conf"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/file"
-	"github.com/sunmi-OS/gocore/v2/tools/gocore/template"
 	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/urfave/cli/v2"
+	"github.com/weblazy/easy-cli/easy/conf"
+	"github.com/weblazy/easy-cli/easy/file"
+	"github.com/weblazy/easy-cli/easy/template"
 )
 
 // CreatService 创建服务
