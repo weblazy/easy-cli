@@ -1,0 +1,19 @@
+<%: func FromCmdJob(name, jobCmd, jobFunctions string, buffer *bytes.Buffer) %>
+package cmd
+
+import (
+	"<%== name %>/app/job"
+	"github.com/urfave/cli/v2"
+	"github.com/sunmi-OS/gocore/v2/utils/closes"
+)
+
+// Job cmd 任务相关
+var Job = &cli.Command{
+	Name:    "job",
+	Aliases: []string{"j"},
+	Usage:   "job",
+	Subcommands: []*cli.Command{
+		<%== jobCmd %>
+	},
+}
+<%== jobFunctions %>

@@ -1,0 +1,65 @@
+<%: func FromCmdInit(name, pkgs, dbUpdate, initDb,initCache,dbUpdateRedis string, buffer *bytes.Buffer) %>
+package cmd
+
+import (
+	<%== pkgs %>
+	"<%== name %>/conf"
+
+	"github.com/sunmi-OS/gocore/v2/conf/nacos"
+	"github.com/sunmi-OS/gocore/v2/db/orm"
+	"github.com/sunmi-OS/gocore/v2/db/redis"
+	"github.com/sunmi-OS/gocore/v2/glog"
+	"github.com/sunmi-OS/gocore/v2/utils"
+	"github.com/sunmi-OS/gocore/v2/conf/viper"
+)
+
+func initConf() {
+	<% if goCoreConfig.Config.CNacos { %>
+		switch utils.GetRunTime() {
+		case "local":
+			nacos.SetLocalConfig(conf.LocalConfig)
+		default:
+			nacos.NewNacosEnv()
+		}
+
+		vt := nacos.GetViper()
+		vt.SetBaseConfig(conf.BaseConfig)
+		vt.SetDataIds(conf.ProjectName, "config" <% if len(goCoreConfig.Config.CMysql) > 0 {%>, "mysql" <% }%><% if len(goCoreConfig.Config.CRedis) > 0 {%>, "redis"<% } %><%if goCoreConfig.Config.CRocketMQConfig {%>, "rocketmq"<% } %>)
+		// 注册配置更新回调
+		<% if len(goCoreConfig.Config.CMysql) > 0 {%>
+		vt.SetCallBackFunc(conf.ProjectName, "mysql", func(namespace, group, dataId, data string) {
+			<%== dbUpdate %>
+		})
+		<% } %>
+		<% if len(goCoreConfig.Config.CRedis) > 0 {%>
+		vt.SetCallBackFunc(conf.ProjectName, "redis", func(namespace, group, dataId, data string) {
+			<%== dbUpdateRedis %>
+		})
+		<% } %>
+		vt.NacosToViper()
+	<%}else{%>
+		viper.MergeConfigToToml(conf.BaseConfig)
+	switch utils.GetRunTime() {
+	case "dev":
+		viper.MergeConfigToToml(conf.DevConfig)
+	case "test":
+		viper.MergeConfigToToml(conf.TestConfig)
+	case "uat":
+		viper.MergeConfigToToml(conf.UatConfig)
+	case "onl":
+		viper.MergeConfigToToml(conf.OnlConfig)
+	default:
+		viper.MergeConfigToToml(conf.LocalConfig)
+	}
+	<%}%>
+}
+
+// initDB 初始化DB服务 （内部方法）
+func initDB() {
+	<%== initDb %>
+}
+
+// initCache 初始化redis服务 （内部方法）
+func initCache() {
+	<%== initCache %>
+}
