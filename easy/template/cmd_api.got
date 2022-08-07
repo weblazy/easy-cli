@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/weblazy/easy/utils/conf/viper"
 	"github.com/sunmi-OS/gocore/v2/utils"
-	"github.com/sunmi-OS/gocore/v2/utils/closes"
+	"github.com/weblazy/easy/utils/closes"
 	"github.com/urfave/cli/v2"
 )
 

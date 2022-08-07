@@ -14,7 +14,7 @@ import (
 	buffer.WriteString(name)
 	buffer.WriteString(`/app/cronjob"
 	"github.com/robfig/cron/v3"
-	"github.com/sunmi-OS/gocore/v2/utils/closes"
+	"github.com/weblazy/easy/utils/closes"
 	"github.com/urfave/cli/v2"
 )
 

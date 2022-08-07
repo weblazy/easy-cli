@@ -14,7 +14,7 @@ import (
 	buffer.WriteString(name)
 	buffer.WriteString(`/app/job"
 	"github.com/urfave/cli/v2"
-	"github.com/sunmi-OS/gocore/v2/utils/closes"
+	"github.com/weblazy/easy/utils/closes"
 )
 
 // Job cmd 任务相关
