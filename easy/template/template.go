@@ -2,7 +2,6 @@ package template
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -42,8 +41,6 @@ func CreateCode(root, name string, config *conf.GoCore) {
 	createDockerfile(root)
 	progressNext("Initialize the Readme...")
 	createReadme(root)
-	progressNext("Initialize the ErrCode...")
-	createErrCode(root)
 	progressNext("Initialize the DB Model...")
 	createModel(root, name)
 	progressNext("Initialize the Cronjob...")
@@ -51,10 +48,9 @@ func CreateCode(root, name string, config *conf.GoCore) {
 	progressNext("Initialize the Job...")
 	createJob(name, root)
 	progressNext("Initialize the Api...")
-	createApi(root, name)
+	createApis(root, name)
 	progressNext("Initialize the Request return parameters...")
-	createDef(root)
-	fmt.Println()
+
 }
 
 // CreateField 创建gorm对应的字段
@@ -80,13 +76,13 @@ func CreateField(field string) string {
 
 func createMain(root, name string) {
 	var cmdList []string
-	if goCoreConfig.HttpApiEnable {
+	if len(goCoreConfig.HttpApis) > 0 {
 		cmdList = append(cmdList, "cmd.Api,")
 	}
-	if goCoreConfig.CronJobEnable {
+	if len(goCoreConfig.CronJobs) > 0 {
 		cmdList = append(cmdList, "cmd.Cron,")
 	}
-	if goCoreConfig.JobEnable {
+	if len(goCoreConfig.Jobs) > 0 {
 		cmdList = append(cmdList, "cmd.Job,")
 	}
 	FromMain(name, cmdList, fileBuffer)
@@ -108,9 +104,13 @@ func createReadme(root string) {
 	fileForceWriter(fileBuffer, root+"/README.md")
 }
 
-func createErrCode(root string) {
+func createErrCode(root, homedir string, httpApi conf.HttpApi) {
 	FromErrCode(fileBuffer)
-	fileWriter(fileBuffer, root+"/app/errcode/errcode.go")
+	err := file.MkdirIfNotExist(homedir + "/errcode")
+	if err != nil {
+		panic(err)
+	}
+	fileWriter(fileBuffer, homedir+"/errcode/errcode.go")
 }
 
 func createModel(root, name string) {
@@ -128,8 +128,8 @@ func createModel(root, name string) {
 	initDb := ""
 	initRedis := ""
 	for _, v1 := range mysqlMap {
-		pkgs += `"` + name + `/app/model/` + v1.Name + `"` + "\n"
-		dir := root + "/app/model/" + v1.Name
+		pkgs += `"` + name + `/model/` + v1.Name + `"` + "\n"
+		dir := root + "/model/" + v1.Name
 		dbUpdate += `
 				err = orm.NewOrUpdateDB(conf.DB` + strings.Title(v1.Name) + `)
 				if err != nil {
@@ -221,11 +221,11 @@ Namespace = ""
 
 func createCronjob(name, root string) {
 	jobs := goCoreConfig.CronJobs
-	if !goCoreConfig.CronJobEnable {
+	if len(jobs) == 0 {
 		return
 	}
 
-	dir := root + "/app/cronjob/"
+	dir := root + "/cronjobs/"
 	err := file.MkdirIfNotExist(dir)
 	if err != nil {
 		panic(err)
@@ -245,11 +245,11 @@ func createCronjob(name, root string) {
 func createJob(name, root string) {
 
 	jobs := goCoreConfig.Jobs
-	if len(jobs) == 0 || !goCoreConfig.JobEnable {
+	if len(jobs) == 0 {
 		return
 	}
 
-	dir := root + "/app/job/"
+	dir := root + "/jobs/"
 	err := file.MkdirIfNotExist(dir)
 	if err != nil {
 		panic(err)
@@ -280,11 +280,18 @@ func ` + v1.Name + `(c *cli.Context) error {
 	fileForceWriter(fileBuffer, root+"/cmd/job.go")
 }
 
-func createApi(root, name string) {
-	if !goCoreConfig.HttpApiEnable {
-		return
+func createApis(root, name string) {
+	for _, v := range goCoreConfig.HttpApis {
+		homedir := root + "/https/" + v.Name
+		createApi(root, name, homedir, v)
+		createDef(root, homedir, v)
+		createErrCode(root, homedir, v)
 	}
-	handlersList := goCoreConfig.HttpApis.Apis
+}
+
+func createApi(root, name, homedir string, httpApi conf.HttpApi) {
+
+	handlersList := httpApi.Apis
 	if len(handlersList) == 0 {
 		return
 	}
@@ -292,13 +299,13 @@ func createApi(root, name string) {
 	FromCmdApi(name, fileBuffer)
 	fileForceWriter(fileBuffer, root+"/cmd/api.go")
 
-	apiDir := root + "/app/api/"
+	apiDir := homedir + "/api/"
 	err := file.MkdirIfNotExist(apiDir)
 	if err != nil {
 		panic(err)
 	}
 
-	domainDir := root + "/app/domain/"
+	domainDir := homedir + "/domain/"
 	err = file.MkdirIfNotExist(domainDir)
 	if err != nil {
 		panic(err)
@@ -355,17 +362,21 @@ func createApi(root, name string) {
 		fileForceWriter(fileBuffer, apiPath)
 	}
 	FromApiRoutes(name, routesStr, fileBuffer)
-	fileForceWriter(fileBuffer, root+"/app/routes/routers.go")
+	err = file.MkdirIfNotExist(homedir + "/routes")
+	if err != nil {
+		panic(err)
+	}
+	fileForceWriter(fileBuffer, homedir+"/routes/routers.go")
 
-	createPostman(root, name, goCoreConfig.HttpApis.CommonHeaders, goCoreConfig.HttpApis.Apis)
+	createPostman(root, name, httpApi.CommonHeaders, httpApi.Apis)
 }
 
-func createDef(root string) {
-	modules := goCoreConfig.HttpApis.Apis
+func createDef(root, homedir string, httpApi conf.HttpApi) {
+	modules := httpApi.Apis
 	if len(modules) == 0 {
 		return
 	}
-	dir := root + "/app/def"
+	dir := homedir + "/def"
 	err := file.MkdirIfNotExist(dir)
 	if err != nil {
 		panic(err)
@@ -394,7 +405,7 @@ func createDef(root string) {
 			FromApiRequest(strings.Title(v2.Name)+"Response", params, fileBuffer)
 		}
 	}
-	for k1, v1 := range goCoreConfig.HttpApis.Params {
+	for k1, v1 := range httpApi.Params {
 		params := ""
 		fields := v1
 		for _, v2 := range fields {
@@ -428,10 +439,10 @@ func mkdir(root string) {
 	var dirList = []string{
 		"/common",
 		"/cmd",
-		"/app/domain",
-		"/app/model",
-		"/app/errcode",
-		"/app/routes",
+		// "/app/domain",
+		"/model",
+		// "/app/errcode",
+		// "/app/routes",
 		"/conf",
 		"/pkg",
 	}

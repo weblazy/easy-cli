@@ -12,10 +12,10 @@ package conf
 var BaseConfig = ` + "`" + `
 [network]
 ApiServiceHost = "`)
-	buffer.WriteString(goCoreConfig.HttpApis.Host)
+	buffer.WriteString("127.0.0.1")
 	buffer.WriteString(`"
 ApiServicePort = "`)
-	buffer.WriteString(goCoreConfig.HttpApis.Port)
+	buffer.WriteString("80")
 	buffer.WriteString(`"
 
 `)

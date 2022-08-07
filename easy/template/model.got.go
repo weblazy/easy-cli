@@ -22,7 +22,7 @@ import (
 	buffer.WriteString(`/conf"
 	"gorm.io/gorm"
 	"github.com/sunmi-OS/gocore/v2/db/orm"
-	"github.com/sunmi-OS/gocore/v2/conf/viper"
+	"github.com/weblazy/easy/utils/conf/viper"
 	"github.com/sunmi-OS/gocore/v2/utils"
 )
 

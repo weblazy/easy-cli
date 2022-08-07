@@ -7,14 +7,15 @@ import (
 )
 
 type GoCore struct {
-	Service       Service   `yaml:"service"`
-	Config        Config    `yaml:"config"`
-	HttpApiEnable bool      `yaml:"httpApiEnable"` // 是否开启HttpApi
-	CronJobEnable bool      `yaml:"cronJobEnable"` // 是否开启 CronJob 默认不开启
-	JobEnable     bool      `yaml:"jobEnable"`     // 是否开启 Job 任务
-	HttpApis      HttpApi   `yaml:"httpApis"`
-	CronJobs      []CronJob `yaml:"cronJobs"`
-	Jobs          []Job     `yaml:"jobs"`
+	Service Service `yaml:"service"`
+	Config  Config  `yaml:"config"`
+	// HttpApiEnable bool      `yaml:"httpApiEnable"` // 是否开启HttpApi
+	// CronJobEnable bool      `yaml:"cronJobEnable"` // 是否开启 CronJob 默认不开启
+	// JobEnable     bool      `yaml:"jobEnable"`     // 是否开启 Job 任务
+	HttpApis []HttpApi `yaml:"httpApis"`
+	CronJobs []CronJob `yaml:"cronJobs"`
+	Jobs     []Job     `yaml:"jobs"`
+	Grpcs    []Grpc    `yaml:"grpcs"`
 }
 
 type Service struct {
@@ -25,6 +26,16 @@ type Service struct {
 // HttpApi 路由拼接规则 /public/v1/项目名/模块名/接口名
 // TODO: swagger.json导入
 type HttpApi struct {
+	Name          string             `yaml:"name"` // 应用名称
+	Comment       string             `yaml:"comment"`
+	Host          string             `yaml:"host"` // 地址
+	Port          string             `yaml:"port"` // 端口
+	Apis          []Api              `yaml:"apis"`
+	CommonHeaders []Header           `yaml:"common_headers"`
+	Params        map[string][]Param `yaml:"params"`
+}
+
+type Grpc struct {
 	Host          string             `yaml:"host"` // 地址
 	Port          string             `yaml:"port"` // 端口
 	Apis          []Api              `yaml:"apis"`
@@ -65,6 +76,11 @@ type CronJob struct {
 
 type Job struct {
 	Name    string `yaml:"name"` // 任务名称
+	Comment string `yaml:"comment"`
+}
+
+type App struct {
+	Name    string `yaml:"name"` // 应用名称
 	Comment string `yaml:"comment"`
 }
 
@@ -136,12 +152,13 @@ func GetGocoreConfig() *GoCore {
 				},
 			},
 		},
-		HttpApiEnable: true,
-		CronJobEnable: true,
-		JobEnable:     true,
-		HttpApis: HttpApi{
+		// HttpApiEnable: true,
+		// CronJobEnable: true,
+		// JobEnable:     true,
+		HttpApis: []HttpApi{HttpApi{
 			Host: "0.0.0.0",
 			Port: "80",
+			Name: "order",
 			Params: map[string][]Param{
 				"User": {
 					{
@@ -193,7 +210,7 @@ func GetGocoreConfig() *GoCore {
 					},
 				},
 			},
-		},
+		}},
 		CronJobs: []CronJob{
 			{
 				Spec: "@every 30m",
