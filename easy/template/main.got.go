@@ -19,7 +19,7 @@ import (
 	buffer.WriteString(projectName)
 	buffer.WriteString(`/conf"
 
-	"github.com/sunmi-OS/gocore/v2/glog"
+	"github.com/weblazy/easy/utils/glog"
 	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/urfave/cli/v2"
 )

@@ -20,7 +20,7 @@ import (
 	"github.com/weblazy/easy/utils/conf/nacos"
 	"github.com/sunmi-OS/gocore/v2/db/orm"
 	"github.com/sunmi-OS/gocore/v2/db/redis"
-	"github.com/sunmi-OS/gocore/v2/glog"
+	"github.com/weblazy/easy/utils/glog"
 	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/weblazy/easy/utils/conf/viper"
 )

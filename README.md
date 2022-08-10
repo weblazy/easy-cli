@@ -20,3 +20,5 @@ Validation: 通过Protobuf统一定义校验规则，并同时适用于HTTP/gRPC
 - grpc服务生成
 - http mock
 - grpc mock
+- 监控面板
+- 告警
