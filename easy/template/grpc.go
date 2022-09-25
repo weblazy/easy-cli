@@ -86,7 +86,7 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 		}
 
 		CreateProto(fileBuffer, handlerName, params, rpcFunc)
-		fileForceWriter(fileBuffer, serviceProtoDir+".go")
+		fileForceWriter(fileBuffer, serviceProtoDir+file.CamelToUnderline(handlerName)+".proto")
 	}
 
 }
