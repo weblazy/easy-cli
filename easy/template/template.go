@@ -47,8 +47,10 @@ func CreateCode(root, name string, config *conf.GoCore) {
 	createCronjob(name, root)
 	progressNext("Initialize the Job...")
 	createJob(name, root)
-	progressNext("Initialize the Api...")
-	createApis(root, name)
+	progressNext("Initialize the Http...")
+	createHttps(root, name)
+	progressNext("Initialize the Grpc...")
+	createGrpcs(root, name)
 	progressNext("Initialize the Request return parameters...")
 
 }
@@ -280,7 +282,7 @@ func ` + v1.Name + `(c *cli.Context) error {
 	fileForceWriter(fileBuffer, root+"/cmd/job.go")
 }
 
-func createApis(root, name string) {
+func createHttps(root, name string) {
 	for _, v := range goCoreConfig.HttpApis {
 		homedir := root + "/https/" + v.Name
 		createApi(root, name, homedir, v)

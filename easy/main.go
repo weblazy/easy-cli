@@ -4,15 +4,14 @@ import (
 	"log"
 	"os"
 
-	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/urfave/cli/v2"
 	"github.com/weblazy/easy-cli/easy/cmd"
 	"github.com/weblazy/easy-cli/easy/conf"
 )
 
 func main() {
-	// 打印banner
-	utils.PrintBanner(conf.PROJECT_NAME)
+	// // 打印banner
+	// utils.PrintBanner(conf.PROJECT_NAME)
 	// 配置cli参数
 	app := cli.NewApp()
 	app.Name = conf.PROJECT_NAME

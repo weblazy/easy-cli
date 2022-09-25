@@ -36,6 +36,7 @@ type HttpApi struct {
 }
 
 type Grpc struct {
+	Name          string             `yaml:"name"` // 应用名称
 	Host          string             `yaml:"host"` // 地址
 	Port          string             `yaml:"port"` // 端口
 	Apis          []Api              `yaml:"apis"`
@@ -226,5 +227,61 @@ func GetGocoreConfig() *GoCore {
 				Comment: "初始化默认用户",
 			},
 		},
+		Grpcs: []Grpc{Grpc{
+			Host: "0.0.0.0",
+			Port: "80",
+			Name: "order",
+			Params: map[string][]Param{
+				"User": {
+					{
+						Name:    "uid",
+						Type:    "int",
+						Comment: "用户ID",
+					},
+					{
+						Name:    "name",
+						Type:    "string",
+						Comment: "用户名",
+					},
+				},
+			},
+			CommonHeaders: []Header{Header{
+				Key:   "Content-Type",
+				Value: "application/json",
+			}},
+			Apis: []Api{
+				{
+					ModuleName: "user",
+					Prefix:     "/app/user",
+					Handle: []Handle{
+						{
+							Name:    "GetUserInfo",
+							Method:  "POST",
+							Comment: "获取用户信息",
+							RequestParams: []Param{
+								{
+									Name:     "uid",
+									Type:     "int",
+									Comment:  "用户ID",
+									Validate: "required,min=1,max=100000",
+								},
+							},
+							ResponseParams: []Param{
+								{
+									Name:    "detail",
+									Type:    "*User",
+									Comment: "用户详情",
+								},
+								{
+									Name:    "list",
+									Type:    "[]*User",
+									Comment: "用户列表",
+								},
+							},
+						},
+					},
+				},
+			},
+		}},
 	}
 }
