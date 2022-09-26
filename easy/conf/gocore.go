@@ -36,12 +36,11 @@ type HttpApi struct {
 }
 
 type Grpc struct {
-	Name          string             `yaml:"name"` // 应用名称
-	Host          string             `yaml:"host"` // 地址
-	Port          string             `yaml:"port"` // 端口
-	Apis          []Api              `yaml:"apis"`
-	CommonHeaders []Header           `yaml:"common_headers"`
-	Params        map[string][]Param `yaml:"params"`
+	Name          string       `yaml:"name"` // 应用名称
+	Host          string       `yaml:"host"` // 地址
+	Port          string       `yaml:"port"` // 端口
+	GrpcServers   []GrpcServer `yaml:"apis"`
+	CommonHeaders []Header     `yaml:"common_headers"`
 }
 
 type Header struct {
@@ -53,6 +52,13 @@ type Api struct {
 	Prefix     string   `yaml:"prefix"`     //路由前缀
 	ModuleName string   `yaml:"moduleName"` // 模块名
 	Handle     []Handle `yaml:"handle"`
+}
+
+type GrpcServer struct {
+	Prefix     string             `yaml:"prefix"`     //路由前缀
+	ModuleName string             `yaml:"moduleName"` // 模块名
+	Handle     []Handle           `yaml:"handle"`
+	Params     map[string][]Param `yaml:"params"`
 }
 
 type Handle struct {
@@ -231,28 +237,28 @@ func GetGocoreConfig() *GoCore {
 			Host: "0.0.0.0",
 			Port: "80",
 			Name: "order",
-			Params: map[string][]Param{
-				"User": {
-					{
-						Name:    "uid",
-						Type:    "int",
-						Comment: "用户ID",
-					},
-					{
-						Name:    "name",
-						Type:    "string",
-						Comment: "用户名",
-					},
-				},
-			},
 			CommonHeaders: []Header{Header{
 				Key:   "Content-Type",
 				Value: "application/json",
 			}},
-			Apis: []Api{
+			GrpcServers: []GrpcServer{
 				{
 					ModuleName: "user",
 					Prefix:     "/app/user",
+					Params: map[string][]Param{
+						"User": {
+							{
+								Name:    "uid",
+								Type:    "int64",
+								Comment: "用户ID",
+							},
+							{
+								Name:    "name",
+								Type:    "string",
+								Comment: "用户名",
+							},
+						},
+					},
 					Handle: []Handle{
 						{
 							Name:    "GetUserInfo",
@@ -261,7 +267,7 @@ func GetGocoreConfig() *GoCore {
 							RequestParams: []Param{
 								{
 									Name:     "uid",
-									Type:     "int",
+									Type:     "int64",
 									Comment:  "用户ID",
 									Validate: "required,min=1,max=100000",
 								},
@@ -269,12 +275,12 @@ func GetGocoreConfig() *GoCore {
 							ResponseParams: []Param{
 								{
 									Name:    "detail",
-									Type:    "*User",
+									Type:    "User",
 									Comment: "用户详情",
 								},
 								{
 									Name:    "list",
-									Type:    "[]*User",
+									Type:    "repeated User",
 									Comment: "用户列表",
 								},
 							},

@@ -1,4 +1,4 @@
-<%: func FromCmdInit(name, pkgs, dbUpdate, initDb,initCache,dbUpdateRedis string, buffer *bytes.Buffer) %>
+<%: func FromCmdInit(name, pkgs, dbUpdate, InitDB,InitCache,dbUpdateRedis string, buffer *bytes.Buffer) %>
 package cmd
 
 import (
@@ -13,7 +13,7 @@ import (
 	"github.com/weblazy/easy/utils/conf/viper"
 )
 
-func initConf() {
+func InitConf() {
 	<% if goCoreConfig.Config.CNacos { %>
 		switch utils.GetRunTime() {
 		case "local":
@@ -54,12 +54,12 @@ func initConf() {
 	<%}%>
 }
 
-// initDB 初始化DB服务 （内部方法）
-func initDB() {
-	<%== initDb %>
+// InitDB 初始化DB服务 （内部方法）
+func InitDB() {
+	<%== InitDB %>
 }
 
-// initCache 初始化redis服务 （内部方法）
-func initCache() {
-	<%== initCache %>
+// InitCache 初始化redis服务 （内部方法）
+func InitCache() {
+	<%== InitCache %>
 }

@@ -42,9 +42,9 @@ var Api = &cli.Command{
 func RunApi(c *cli.Context) error {
 	defer closes.Close()
 
-	initConf()
-	initDB()
-	initCache()
+	InitConf()
+	InitDB()
+	InitCache()
 	
 	if utils.IsRelease() {
 		gin.SetMode(gin.ReleaseMode)

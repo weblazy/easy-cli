@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/weblazy/easy-cli/easy/conf"
 	"github.com/weblazy/easy-cli/easy/file"
 )
@@ -20,7 +21,7 @@ func createGrpcs(root, name string) {
 }
 
 func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
-	handlersList := grpc.Apis
+	handlersList := grpc.GrpcServers
 	if len(handlersList) == 0 {
 		return
 	}
@@ -43,9 +44,13 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 		panic(err)
 	}
 
+	handlerStr := ""
+	handlerRegister := ""
 	for _, v1 := range handlersList {
 		handlerName := v1.ModuleName
 
+		handlerStr += fmt.Sprintf("%sServer := %s.New%sServer(svcCtx)\n", handlerName, handlerName, strings.Title(handlerName))
+		handlerRegister += fmt.Sprintf("%s.Register%sServer(s, %sServer)", handlerName, strings.Title(handlerName), handlerName)
 		serviceProtoDir := protoDir + file.CamelToUnderline(handlerName) + "/"
 		err = file.MkdirIfNotExist(serviceProtoDir)
 		if err != nil {
@@ -68,6 +73,19 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 		// 	continue
 		// }
 
+		fileBuffer.WriteString(fmt.Sprintf(`package %s
+		type %sServer struct{
+			svcCtx *svc.ServiceContext		
+		}
+
+		func New%sServer(svcCtx *svc.ServiceContext) *%sServer {
+			return &%sServer{
+				svcCtx: svcCtx,
+			}
+		}
+		`, handlerName, strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName)))
+		fileForceWriter(fileBuffer, servicelogicDir+file.CamelToUnderline(handlerName)+"_server.go")
+
 		rpcFunc := ""
 		params := ""
 		for _, v2 := range routes {
@@ -77,18 +95,22 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 			rpcFunc += fmt.Sprintf("  rpc %s(%sRequest) returns (%sResponse);", function, function, function)
 
 			logic := fmt.Sprintf(`
-			func (l *%sLogic) %s(ctx context.Context, req *%s.%sRequest) (*%s.%sResponse, error) {
+			package %s
+			func (l *%sServer) %s(ctx context.Context, req *%s.%sRequest) (*%s.%sResponse, error) {
 					resp := &%s.%sResponse{}
 					return resp,nil
-}`, function, function, handlerName, function, handlerName, function, handlerName, function)
+}`, handlerName, strings.Title(handlerName), function, handlerName, function, handlerName, function, handlerName, function)
 			fileBuffer.WriteString(logic)
 			fileForceWriter(fileBuffer, servicelogicDir+file.CamelToUnderline(route)+".go")
 		}
 
+		params += createRpcParams(v1.Params)
+
 		CreateProto(fileBuffer, handlerName, params, rpcFunc)
 		fileForceWriter(fileBuffer, serviceProtoDir+file.CamelToUnderline(handlerName)+".proto")
+		createPb(serviceProtoDir + file.CamelToUnderline(handlerName) + ".proto")
 	}
-
+	GreateCmd(grpc.Name, homedir, handlerStr, handlerRegister)
 }
 
 func CreateProto(buffer *bytes.Buffer, service, param, rpcFunc string) {
@@ -97,12 +119,14 @@ syntax = "proto3";
 
 package %s;
 
+option go_package = "./%s";
+
 %s
 
-service %s{
+service %sService{
 	%s
 }
-`, service, param, service, rpcFunc))
+`, service, service, param, strings.Title(service), rpcFunc))
 
 }
 
@@ -110,21 +134,90 @@ func createRpcParam(handle conf.Handle) string {
 	params := ""
 	fields := handle.RequestParams
 	for k1, v3 := range fields {
-		params += fmt.Sprintf("  %s %s = %d;\n", v3.Type, v3.Name, k1)
+		params += fmt.Sprintf("  %s %s = %d;\n", v3.Type, v3.Name, k1+1)
 	}
 
 	req := fmt.Sprintf(`message %sRequest{
   %s
-}`, strings.Title(handle.Name), params)
+}
+`, handle.Name, params)
 
 	params = ""
 	fields = handle.ResponseParams
 	for k1, v3 := range fields {
-		params += fmt.Sprintf("  %s %s = %d;\n", v3.Type, v3.Name, k1)
+		params += fmt.Sprintf("  %s %s = %d;\n", v3.Type, v3.Name, k1+1)
 	}
 	resp := fmt.Sprintf(`message %sResponse{
   %s
-}`, strings.Title(handle.Name), params)
+}
+`, strings.Title(handle.Name), params)
 
 	return req + resp
+}
+
+func createRpcParams(paramsMap map[string][]conf.Param) string {
+	paramStr := ""
+	for k1, v1 := range paramsMap {
+		paramStrContent := ""
+		for k2, v2 := range v1 {
+			paramStrContent += fmt.Sprintf("  %s %s = %d;\n", v2.Type, v2.Name, k2+1)
+		}
+
+		paramStr += fmt.Sprintf(`message %s{
+  %s
+}`, strings.Title(k1), paramStrContent)
+	}
+
+	return paramStr
+}
+
+func GreateCmd(grpcName, homedir string, handlerStr, handlerRegister string) {
+	cmd := fmt.Sprintf(`
+	package %s
+	var Cmd = &cli.Command{
+	Name:    "%s",
+	Aliases: []string{},
+	Usage:   "%s start",
+	Subcommands: []*cli.Command{
+		{
+			Name:   "start",
+			Usage:  "start service",
+			Action: Run,
+		},
+	},
+}
+
+func Run(c *cli.Context) error {
+	defer closes.Close()
+
+	cmd.InitConf()
+	cmd.InitDB()
+	cmd.InitCache()
+	svcCtx := svc.NewServiceContext(c)
+
+	%s
+
+	listen, err := net.Listen("tcp", viper.C.GetString("network.GrpcServicePort"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	s := grpc.NewServer()
+    %s
+	if err := s.Serve(listen); err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+`, grpcName, grpcName, grpcName, handlerStr, handlerRegister)
+	fileBuffer.WriteString(cmd)
+	fileForceWriter(fileBuffer, homedir+"/"+file.CamelToUnderline(grpcName)+".go")
+}
+
+func createPb(path string) {
+	resp, err := utils.Cmd("protoc", []string{"--go_out=.", "--go_opt=paths=source_relative", "--go-grpc_out=.", "--go-grpc_opt=paths=source_relative", path})
+	if err != nil {
+		fmt.Println(resp)
+		panic(err)
+	}
 }

@@ -24,9 +24,9 @@ var Cron = &cli.Command{
 func CronTable(c *cli.Context) error {
 	defer closes.Close()
 	// 初始化必要内容
-	initConf()
-	initDB()
-	initCache()
+	InitConf()
+	InitDB()
+	InitCache()
 
 	cronJob := cron.New()
 

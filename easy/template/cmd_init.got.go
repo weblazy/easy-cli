@@ -5,7 +5,7 @@ package template
 
 import "bytes"
 
-func FromCmdInit(name, pkgs, dbUpdate, initDb, initCache, dbUpdateRedis string, buffer *bytes.Buffer) {
+func FromCmdInit(name, pkgs, dbUpdate, InitDB, InitCache, dbUpdateRedis string, buffer *bytes.Buffer) {
 	buffer.WriteString(`
 package cmd
 
@@ -25,7 +25,7 @@ import (
 	"github.com/weblazy/easy/utils/conf/viper"
 )
 
-func initConf() {
+func InitConf() {
 	`)
 	if goCoreConfig.Config.CNacos {
 		buffer.WriteString(`
@@ -92,17 +92,17 @@ func initConf() {
 	buffer.WriteString(`
 }
 
-// initDB 初始化DB服务 （内部方法）
-func initDB() {
+// InitDB 初始化DB服务 （内部方法）
+func InitDB() {
 	`)
-	buffer.WriteString(initDb)
+	buffer.WriteString(InitDB)
 	buffer.WriteString(`
 }
 
-// initCache 初始化redis服务 （内部方法）
-func initCache() {
+// InitCache 初始化redis服务 （内部方法）
+func InitCache() {
 	`)
-	buffer.WriteString(initCache)
+	buffer.WriteString(InitCache)
 	buffer.WriteString(`
 }`)
 

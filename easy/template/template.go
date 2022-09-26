@@ -127,7 +127,7 @@ func createModel(root, name string) {
 	if len(mysqlMap) > 0 {
 		dbUpdate = "var err error"
 	}
-	initDb := ""
+	InitDB := ""
 	initRedis := ""
 	for _, v1 := range mysqlMap {
 		pkgs += `"` + name + `/model/` + v1.Name + `"` + "\n"
@@ -138,7 +138,7 @@ func createModel(root, name string) {
 					glog.Error(err)
 				}
 		`
-		initDb += `orm.NewDB(conf.DB` + strings.Title(v1.Name) + `)` + "\n" + v1.Name + `.SchemaMigrate()` + "\n"
+		InitDB += `orm.NewDB(conf.DB` + strings.Title(v1.Name) + `)` + "\n" + v1.Name + `.SchemaMigrate()` + "\n"
 		err := file.MkdirIfNotExist(dir)
 		if err != nil {
 			panic(err)
@@ -214,7 +214,7 @@ Namespace = ""
 	}
 	FromConfLocal("LocalConfig", localConf, fileBuffer)
 	fileWriter(fileBuffer, root+"/conf/local.go")
-	FromCmdInit(name, pkgs, dbUpdate, initDb, initRedis, dbUpdateRedis, fileBuffer)
+	FromCmdInit(name, pkgs, dbUpdate, InitDB, initRedis, dbUpdateRedis, fileBuffer)
 	fileForceWriter(fileBuffer, root+"/cmd/init.go")
 
 	FromConfBase(baseConf, fileBuffer)
@@ -270,8 +270,8 @@ func createJob(name, root string) {
 func ` + v1.Name + `(c *cli.Context) error {
 	defer closes.Close()
 	// 初始化必要内容
-	initConf()
-	initDB()
+	InitConf()
+	InitDB()
 	job.` + v1.Name + `()
 	return nil
 }
