@@ -78,14 +78,17 @@ func CreateField(field string) string {
 
 func createMain(root, name string) {
 	var cmdList []string
-	if len(goCoreConfig.HttpApis) > 0 {
-		cmdList = append(cmdList, "cmd.Api,")
+	for _, v := range goCoreConfig.HttpApis {
+		cmdList = append(cmdList, v.Name+".Cmd,")
+	}
+	for _, v := range goCoreConfig.Grpcs {
+		cmdList = append(cmdList, v.Name+".Cmd,")
 	}
 	if len(goCoreConfig.CronJobs) > 0 {
-		cmdList = append(cmdList, "cmd.Cron,")
+		cmdList = append(cmdList, "cronjobs.Cmd,")
 	}
 	if len(goCoreConfig.Jobs) > 0 {
-		cmdList = append(cmdList, "cmd.Job,")
+		cmdList = append(cmdList, "jobs.Cmd,")
 	}
 	FromMain(name, cmdList, fileBuffer)
 	fileForceWriter(fileBuffer, root+"/main.go")
@@ -232,16 +235,24 @@ func createCronjob(name, root string) {
 	if err != nil {
 		panic(err)
 	}
+
+	handlerDir := dir + "/handler/"
+	err = file.MkdirIfNotExist(handlerDir)
+	if err != nil {
+		panic(err)
+	}
+
 	cronjobs := ""
 	for _, v1 := range jobs {
-		jobPath := dir + file.CamelToUnderline(v1.Job.Name) + ".go"
+
+		jobPath := handlerDir + file.CamelToUnderline(v1.Job.Name) + ".go"
 		FromCronJob(v1.Job.Name, v1.Job.Comment, fileBuffer)
 		fileForceWriter(fileBuffer, jobPath)
 		cronjobs += "_,_ = cronJob.AddFunc(\"" + v1.Spec + "\", cronjob." + v1.Job.Name + ")\n"
 	}
 
 	FromCmdCronJob(name, cronjobs, fileBuffer)
-	fileForceWriter(fileBuffer, root+"/cmd/cron.go")
+	fileForceWriter(fileBuffer, dir+"cronjobs.go")
 }
 
 func createJob(name, root string) {
@@ -256,11 +267,18 @@ func createJob(name, root string) {
 	if err != nil {
 		panic(err)
 	}
+
+	handlerDir := dir + "/handler/"
+	err = file.MkdirIfNotExist(handlerDir)
+	if err != nil {
+		panic(err)
+	}
+
 	jobCmd := ""
 	jobFunctions := ""
 	for _, v1 := range jobs {
 		FromJob(v1.Name, v1.Comment, fileBuffer)
-		fileForceWriter(fileBuffer, dir+file.CamelToUnderline(v1.Name)+".go")
+		fileForceWriter(fileBuffer, handlerDir+file.CamelToUnderline(v1.Name)+".go")
 		jobCmd += `		{
 			Name:   "` + v1.Name + `",
 			Usage:  "` + v1.Comment + `",
@@ -270,8 +288,8 @@ func createJob(name, root string) {
 func ` + v1.Name + `(c *cli.Context) error {
 	defer closes.Close()
 	// 初始化必要内容
-	InitConf()
-	InitDB()
+	cmd.InitConf()
+	cmd.InitDB()
 	job.` + v1.Name + `()
 	return nil
 }
@@ -279,7 +297,7 @@ func ` + v1.Name + `(c *cli.Context) error {
 	}
 
 	FromCmdJob(name, jobCmd, jobFunctions, fileBuffer)
-	fileForceWriter(fileBuffer, root+"/cmd/job.go")
+	fileForceWriter(fileBuffer, root+"/jobs/jobs.go")
 }
 
 func createHttps(root, name string) {
@@ -298,16 +316,21 @@ func createApi(root, name, homedir string, httpApi conf.HttpApi) {
 		return
 	}
 
-	FromCmdApi(name, fileBuffer)
-	fileForceWriter(fileBuffer, root+"/cmd/api.go")
-
-	apiDir := homedir + "/api/"
-	err := file.MkdirIfNotExist(apiDir)
+	err := file.MkdirIfNotExist(homedir)
 	if err != nil {
 		panic(err)
 	}
 
-	domainDir := homedir + "/domain/"
+	FromCmdApi(name, fileBuffer)
+	fileForceWriter(fileBuffer, homedir+"/"+httpApi.Name+".go")
+
+	apiDir := homedir + "/api/"
+	err = file.MkdirIfNotExist(apiDir)
+	if err != nil {
+		panic(err)
+	}
+
+	domainDir := homedir + "/logic/"
 	err = file.MkdirIfNotExist(domainDir)
 	if err != nil {
 		panic(err)

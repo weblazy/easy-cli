@@ -26,7 +26,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var Api = &cli.Command{
+var Cmd = &cli.Command{
 	Name:    "api",
 	Aliases: []string{"a"},
 	Usage:   "api start",
@@ -34,17 +34,17 @@ var Api = &cli.Command{
 		{
 			Name:   "start",
 			Usage:  "开启运行api服务",
-			Action: RunApi,
+			Action: Run,
 		},
 	},
 }
 
-func RunApi(c *cli.Context) error {
+func Run(c *cli.Context) error {
 	defer closes.Close()
 
-	InitConf()
-	InitDB()
-	InitCache()
+	cmd.InitConf()
+	cmd.InitDB()
+	cmd.InitCache()
 	
 	if utils.IsRelease() {
 		gin.SetMode(gin.ReleaseMode)

@@ -7,18 +7,18 @@ import "bytes"
 
 func FromCmdCronJob(name, cronjobs string, buffer *bytes.Buffer) {
 	buffer.WriteString(`
-package cmd
+package cronjobs
 
 import (
 	"`)
 	buffer.WriteString(name)
-	buffer.WriteString(`/app/cronjob"
+	buffer.WriteString(`/app/cronjobs"
 	"github.com/robfig/cron/v3"
 	"github.com/weblazy/easy/utils/closes"
 	"github.com/urfave/cli/v2"
 )
 
-var Cron = &cli.Command{
+var Cmd = &cli.Command{
 	Name:    "cron",
 	Aliases: []string{"c"},
 	Usage:   "cron start",
@@ -26,17 +26,17 @@ var Cron = &cli.Command{
 		{
 			Name:   "start",
 			Usage:  "开启运行api服务",
-			Action: CronTable,
+			Action: Run,
 		},
 	},
 }
 
-func CronTable(c *cli.Context) error {
+func Run(c *cli.Context) error {
 	defer closes.Close()
 	// 初始化必要内容
-	InitConf()
-	InitDB()
-	InitCache()
+	cmd.InitConf()
+	cmd.InitDB()
+	cmd.InitCache()
 
 	cronJob := cron.New()
 

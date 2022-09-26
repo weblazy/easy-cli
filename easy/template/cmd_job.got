@@ -1,5 +1,5 @@
 <%: func FromCmdJob(name, jobCmd, jobFunctions string, buffer *bytes.Buffer) %>
-package cmd
+package jobs
 
 import (
 	"<%== name %>/app/job"
@@ -8,7 +8,7 @@ import (
 )
 
 // Job cmd 任务相关
-var Job = &cli.Command{
+var Cmd = &cli.Command{
 	Name:    "job",
 	Aliases: []string{"j"},
 	Usage:   "job",

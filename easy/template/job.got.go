@@ -7,7 +7,7 @@ import "bytes"
 
 func FromJob(job, comment string, buffer *bytes.Buffer) {
 	buffer.WriteString(`
-package job
+package handler
 // `)
 	buffer.WriteString(job)
 	buffer.WriteString(" " + comment)

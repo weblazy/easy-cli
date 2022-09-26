@@ -1,5 +1,5 @@
 <%: func FromCmdCronJob(name, cronjobs string, buffer *bytes.Buffer) %>
-package cmd
+package cronjobs
 
 import (
 	"<%== name %>/app/cronjob"
@@ -24,9 +24,9 @@ var Cron = &cli.Command{
 func CronTable(c *cli.Context) error {
 	defer closes.Close()
 	// 初始化必要内容
-	InitConf()
-	InitDB()
-	InitCache()
+	cmd.InitConf()
+	cmd.InitDB()
+	cmd.InitCache()
 
 	cronJob := cron.New()
 

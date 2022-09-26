@@ -7,7 +7,7 @@ import "bytes"
 
 func FromCronJob(cron, comment string, buffer *bytes.Buffer) {
 	buffer.WriteString(`
-package cronjob
+package handler
 // `)
 	buffer.WriteString(cron)
 	buffer.WriteString(" " + comment)
