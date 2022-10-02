@@ -190,9 +190,9 @@ func GreateCmd(grpcName, homedir string, handlerStr, handlerRegister string) {
 func Run(c *cli.Context) error {
 	defer closes.Close()
 
-	cmd.cmd.InitConf()
-	cmd.cmd.InitDB()
-	cmd.cmd.InitCache()
+	cmd.InitConf()
+	cmd.InitDB()
+	cmd.InitCache()
 	svcCtx := svc.NewServiceContext(c)
 
 	%s

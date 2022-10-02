@@ -3,10 +3,13 @@
 // DO NOT EDIT!
 package template
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
-func FromApiRoutes(name, routes string, buffer *bytes.Buffer) {
-	buffer.WriteString(`
+func FromRoutes(name,httpName, routes string, buffer *bytes.Buffer) {
+	buffer.WriteString(fmt.Sprintf(`
 package routes
 
 import (
@@ -14,9 +17,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
-	"`)
-	buffer.WriteString(name)
-	buffer.WriteString(`/app/api"
+	"%s/https/%s/handler"
 )
 
 func Routes(router *gin.Engine) {
@@ -25,11 +26,8 @@ func Routes(router *gin.Engine) {
 	router.Any("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Welcome GoCore Service")
 	})
-
-    `)
-	buffer.WriteString(routes)
-	buffer.WriteString(`
+	%s
 }
-`)
+    `,name,httpName,routes))
 
 }

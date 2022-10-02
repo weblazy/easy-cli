@@ -1,5 +1,0 @@
-<%: func FromCronJob(cron,comment string, buffer *bytes.Buffer) %>
-package handler
-// <%== cron %> <%== " "+comment %>
-func <%== cron %>() {
-}

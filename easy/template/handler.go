@@ -3,22 +3,24 @@
 // DO NOT EDIT!
 package template
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
-func FromApi(name, handler, apiContent string, comments []string, functions []string, req []string, buffer *bytes.Buffer) {
+func FromHandler(name,httpName, handler, apiContent string, comments []string, functions []string, req []string, buffer *bytes.Buffer) {
 	if apiContent == "" {
-		buffer.WriteString(`
-package api
+		buffer.WriteString(fmt.Sprintf(`
+package handler
 
 import (
-	"`)
-		buffer.WriteString(name)
-		buffer.WriteString(`/app/def"
+	"%s/https/%s/def"
 
 	"github.com/gin-gonic/gin"
-    "github.com/sunmi-OS/gocore/v2/api"
+    "github.com/weblazy/easy/utils/http/http_server"
 )
-`)
+`,name,httpName))
+
 	} else {
 		buffer.WriteString(apiContent)
 	}
@@ -31,7 +33,7 @@ import (
     func `)
 		buffer.WriteString(v1)
 		buffer.WriteString(`(g *gin.Context) {
-        ctx := api.NewContext(g)
+        ctx := http_server.NewContext(g)
         req := new(def.`)
 		buffer.WriteString(req[k1])
 		buffer.WriteString(`Request)

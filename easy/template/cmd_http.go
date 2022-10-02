@@ -3,19 +3,17 @@
 // DO NOT EDIT!
 package template
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
-func FromCmdApi(projectName string, buffer *bytes.Buffer) {
-	buffer.WriteString(`
+func FromCmdApi(name,projectName string, buffer *bytes.Buffer) {
+	buffer.WriteString(fmt.Sprintf(`
 package cmd
 
 import (
-	_ "`)
-	buffer.WriteString(projectName)
-	buffer.WriteString(`/app/errcode"
-	"`)
-	buffer.WriteString(projectName)
-	buffer.WriteString(`/app/routes"
+	"/%s/https/%s/routes"
 
 	"github.com/gin-contrib/gzip"
 	"github.com/fvbock/endless"
@@ -62,6 +60,6 @@ func Run(c *cli.Context) error {
 		return err
 	}
 	return nil
-}`)
+}`,name,projectName))
 
 }
