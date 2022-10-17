@@ -8,20 +8,22 @@ import (
 	"fmt"
 )
 
-func FromCmdApi(name,projectName string, buffer *bytes.Buffer) {
+func FromCmdApi(homePath string, buffer *bytes.Buffer) {
 	buffer.WriteString(fmt.Sprintf(`
 package cmd
 
 import (
-	"/%s/https/%s/routes"
+	"%s/routes"
+	conf "%s/config"
 
 	"github.com/gin-contrib/gzip"
-	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
 	"github.com/weblazy/easy/utils/conf/viper"
 	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/weblazy/easy/utils/closes"
 	"github.com/urfave/cli/v2"
+	"github.com/weblazy/easy/utils/http/http_server"
+	"github.com/weblazy/easy/utils/http/http_server/config"
 )
 
 var Cmd = &cli.Command{
@@ -48,18 +50,19 @@ func Run(c *cli.Context) error {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	r := gin.New()
-	r.Use(gin.Logger())
-	r.Use(gin.Recovery())
-	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	cfg := config.DefaultConfig()
+	s, err := http_server.NewHttpServer(cfg)
+	if err != nil {
+		return err
+	}
 	// 注册路由
 	routes.Routes(r)
 
-	err := endless.ListenAndServe(viper.C.GetString("network.ApiServiceHost")+":"+viper.C.GetString("network.ApiServicePort"), r)
+	err := s.Start()
 	if err != nil {
 		return err
 	}
 	return nil
-}`,name,projectName))
+}`,homePath,homePath))
 
 }

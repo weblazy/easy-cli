@@ -8,7 +8,7 @@ import (
 	"fmt"
 )
 
-func FromRoutes(name,httpName, routes string, buffer *bytes.Buffer) {
+func FromRoutes(routesPkg, routes string, buffer *bytes.Buffer) {
 	buffer.WriteString(fmt.Sprintf(`
 package routes
 
@@ -17,7 +17,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
-	"%s/https/%s/handler"
+	%s
 )
 
 func Routes(router *gin.Engine) {
@@ -28,6 +28,21 @@ func Routes(router *gin.Engine) {
 	})
 	%s
 }
-    `,name,httpName,routes))
+    `,routesPkg,routes))
 
+}
+
+func CreateInterceptor(homePath,handlerName string)string{
+	return fmt.Sprintf(`package routes
+
+import (
+	"%s/config"
+
+	"github.com/gin-gonic/gin"
+)
+
+func %sInterceptor(cfg *config.Config, group *gin.RouterGroup) {
+
+}
+`,homedir,handlerName)
 }

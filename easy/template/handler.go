@@ -8,45 +8,36 @@ import (
 	"fmt"
 )
 
-func FromHandler(name,httpName, handler, apiContent string, comments []string, functions []string, req []string, buffer *bytes.Buffer) {
-	if apiContent == "" {
+func FromHandler(homePath,homedir,handlerName string , comments []string, functions []string,  buffer *bytes.Buffer) {
+
+	for k1, v1 := range functions {
 		buffer.WriteString(fmt.Sprintf(`
-package handler
+package %s
 
 import (
-	"%s/https/%s/def"
+	"%s/def"
+	"%s/logic/%s"
 
 	"github.com/gin-gonic/gin"
-    "github.com/weblazy/easy/utils/http/http_server"
+	"github.com/weblazy/easy/utils/http/http_server/service"
 )
-`,name,httpName))
-
-	} else {
-		buffer.WriteString(apiContent)
-	}
-	for k1, v1 := range functions {
-		buffer.WriteString(`
-	// `)
-		buffer.WriteString(v1)
-		buffer.WriteString(" " + comments[k1])
-		buffer.WriteString(`
-    func `)
-		buffer.WriteString(v1)
-		buffer.WriteString(`(g *gin.Context) {
-        ctx := http_server.NewContext(g)
-        req := new(def.`)
-		buffer.WriteString(req[k1])
-		buffer.WriteString(`Request)
-        err := ctx.BindValidator(req)
+    // %s
+	func %s(g *gin.Context) {
+		 svcCtx := service.NewServiceContext(g)
+		 req := new(def.%sRequest)
+		 err := svcCtx.BindValidator(req)
+		 if err != nil {
+			svcCtx.Error(err)
+			return
+		 }
+		resp, code, err := %s.%s(svcCtx, req)
 		if err != nil {
-			ctx.Error(err)
+			svcCtx.ErrorCodeMsg(code, err.Error())
 			return
 		}
-		ctx.Success(def.`)
-		buffer.WriteString(req[k1])
-		buffer.WriteString(`Response{})
-    }
-`)
+		svcCtx.Success(resp)
+	}
+`,handlerName,homePath,homePath,handlerName, comments[k1],v1,v1,handlerName,v1))
 	}
 
 }
