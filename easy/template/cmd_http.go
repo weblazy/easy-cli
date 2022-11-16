@@ -41,13 +41,9 @@ var Cmd = &cli.Command{
 
 func Run(c *cli.Context) error {
 	defer closes.Close()
+	config.InitConf()
 
-	cmd.InitConf()
-	cmd.InitDB()
-	cmd.InitCache()
-
-	cfg := http_server_config.DefaultConfig()
-	s, err := http_server.NewHttpServer(cfg)
+	s, err := http_server.NewHttpServer(config.Conf.HttpServerConfig)
 	if err != nil {
 		return err
 	}

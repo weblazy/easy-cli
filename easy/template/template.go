@@ -286,8 +286,7 @@ func createJob(name, root string) {
 func ` + v1.Name + `(c *cli.Context) error {
 	defer closes.Close()
 	// 初始化必要内容
-	cmd.InitConf()
-	cmd.InitDB()
+	config.InitConf()
 	handler.` + v1.Name + `()
 	return nil
 }

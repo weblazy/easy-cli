@@ -50,7 +50,7 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 	for _, v1 := range handlersList {
 		handlerName := v1.ModuleName
 
-		handlerStr += fmt.Sprintf("%sServer := %s.New%sServer(svcCtx)\n", handlerName, handlerName, strings.Title(handlerName))
+		handlerStr += fmt.Sprintf("%sServer := %s.New%sServer()\n", handlerName, handlerName, strings.Title(handlerName))
 		handlerRegister += fmt.Sprintf("%s.Register%sServer(s, %sServer)", handlerName, strings.Title(handlerName), handlerName)
 		serviceProtoDir := protoDir + file.CamelToUnderline(handlerName) + "/"
 		err = file.MkdirIfNotExist(serviceProtoDir)
@@ -205,21 +205,16 @@ func GreateCmd(grpcName, homedir, pkgStr string, handlerStr, handlerRegister str
 
 func Run(c *cli.Context) error {
 	defer closes.Close()
-
-	cmd.InitConf()
-	cmd.InitDB()
-	cmd.InitCache()
-	svcCtx := svc.NewServiceContext(c)
-
+	config.InitConf()
+	s := grpc_server.NewGrpcServer(config.Conf.GrpcServerConfig)
 	%s
-
-	listen, err := net.Listen("tcp", viper.C.GetString("network.GrpcServicePort"))
+    %s
+	err := s.Init()
 	if err != nil {
 		log.Fatal(err)
 	}
-	s := grpc.NewServer()
-    %s
-	if err := s.Serve(listen); err != nil {
+	err = s.Start()
+	if err != nil {
 		log.Fatal(err)
 	}
 

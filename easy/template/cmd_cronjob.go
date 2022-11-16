@@ -34,10 +34,7 @@ var Cmd = &cli.Command{
 func Run(c *cli.Context) error {
 	defer closes.Close()
 	// 初始化必要内容
-	cmd.InitConf()
-	cmd.InitDB()
-	cmd.InitCache()
-
+	config.InitConf()
 	cronJob := cron.New()
 
     `)
