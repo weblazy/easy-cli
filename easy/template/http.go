@@ -30,7 +30,7 @@ func createApi(root, name, homedir, homePath string, httpApi conf.HttpApi) {
 		panic(err)
 	}
 
-	FromCmdApi(homePath, fileBuffer)
+	FromCmdApi(httpApi.Name, homePath, fileBuffer)
 	fileForceWriter(fileBuffer, homedir+"/"+httpApi.Name+".go")
 
 	handlerDir := homedir + "/handler/"

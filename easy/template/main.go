@@ -10,28 +10,22 @@ func FromMain(projectName string, cmdList []string, buffer *bytes.Buffer) {
 package main
 
 import (
-	"os"
+	"os"`)
+	buffer.WriteString("\n\""+projectName+`/cmd"`)
+	buffer.WriteString("\n\""+projectName+`/common"
 
-	"`)
-	buffer.WriteString(projectName)
-	buffer.WriteString(`/cmd"
-	"`)
-	buffer.WriteString(projectName)
-	buffer.WriteString(`/conf"
-
-	"github.com/weblazy/easy/utils/glog"
+	"github.com/weblazy/easy/utils/elog"
 	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
 	// 打印Banner
-	utils.PrintBanner(conf.ProjectName)
+	utils.PrintBanner(common.ProjectName)
 	// 配置cli参数
 	app := cli.NewApp()
-	app.Name = conf.ProjectName
-	app.Usage = conf.ProjectName
-	app.Version = conf.ProjectVersion
+	app.Name = common.ProjectName
+	app.Version = common.ProjectVersion
 
 	// 指定命令运行的函数
 	app.Commands = []*cli.Command{
@@ -44,7 +38,7 @@ func main() {
 
 	// 启动cli
 	if err := app.Run(os.Args); err != nil {
-		glog.ErrorF("Failed to start application: %v", err)
+		elog.ErrorCtx(context.Background(), "Failed to start application", elog.FieldError(err))
 	}
 }`)
 

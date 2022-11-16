@@ -32,11 +32,11 @@ func Routes(router *gin.Engine) {
 
 }
 
-func CreateInterceptor(homePath,handlerName string)string{
+func CreateInterceptor(homedir,handlerName string)string{
 	return fmt.Sprintf(`package routes
 
 import (
-	"%s/config"
+	"%s/http_config"
 
 	"github.com/gin-gonic/gin"
 )

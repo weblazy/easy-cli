@@ -8,9 +8,9 @@ import (
 	"fmt"
 )
 
-func FromCmdApi(homePath string, buffer *bytes.Buffer) {
+func FromCmdApi(serviceName,homePath string, buffer *bytes.Buffer) {
 	buffer.WriteString(fmt.Sprintf(`
-package cmd
+package %s
 
 import (
 	"%s/routes"
@@ -23,7 +23,7 @@ import (
 	"github.com/weblazy/easy/utils/closes"
 	"github.com/urfave/cli/v2"
 	"github.com/weblazy/easy/utils/http/http_server"
-	"github.com/weblazy/easy/utils/http/http_server/config"
+	"github.com/weblazy/easy/utils/http/http_server/http_server_config"
 )
 
 var Cmd = &cli.Command{
@@ -45,24 +45,20 @@ func Run(c *cli.Context) error {
 	cmd.InitConf()
 	cmd.InitDB()
 	cmd.InitCache()
-	
-	if utils.IsRelease() {
-		gin.SetMode(gin.ReleaseMode)
-	}
 
-	cfg := config.DefaultConfig()
+	cfg := http_server_config.DefaultConfig()
 	s, err := http_server.NewHttpServer(cfg)
 	if err != nil {
 		return err
 	}
 	// 注册路由
-	routes.Routes(r)
+	routes.Routes(s.Engine)
 
-	err := s.Start()
+	err = s.Start()
 	if err != nil {
 		return err
 	}
 	return nil
-}`,homePath,homePath))
+}`,serviceName,homePath,homePath))
 
 }

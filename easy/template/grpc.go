@@ -46,6 +46,7 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 
 	handlerStr := ""
 	handlerRegister := ""
+	pkgStr := ""
 	for _, v1 := range handlersList {
 		handlerName := v1.ModuleName
 
@@ -109,8 +110,9 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 		CreateProto(fileBuffer, handlerName, params, rpcFunc)
 		fileForceWriter(fileBuffer, serviceProtoDir+file.CamelToUnderline(handlerName)+".proto")
 		createPb(serviceProtoDir + file.CamelToUnderline(handlerName) + ".proto")
+		pkgStr += "\"" + name + "/grpcs/" + grpc.Name + "/" + file.CamelToUnderline(handlerName) + "\"\n"
 	}
-	GreateCmd(grpc.Name, homedir, handlerStr, handlerRegister)
+	GreateCmd(grpc.Name, homedir, pkgStr, handlerStr, handlerRegister)
 }
 
 func CreateProto(buffer *bytes.Buffer, service, param, rpcFunc string) {
@@ -171,9 +173,23 @@ func createRpcParams(paramsMap map[string][]conf.Param) string {
 	return paramStr
 }
 
-func GreateCmd(grpcName, homedir string, handlerStr, handlerRegister string) {
+func GreateCmd(grpcName, homedir, pkgStr string, handlerStr, handlerRegister string) {
 	cmd := fmt.Sprintf(`
 	package %s
+	import (
+		"log"
+		"net"
+		"order/cmd"
+
+		"github.com/urfave/cli/v2"
+
+		"github.com/weblazy/easy/utils/closes"
+		"github.com/weblazy/gocore/viper"
+		"google.golang.org/grpc"
+		%s
+	)
+
+
 	var Cmd = &cli.Command{
 	Name:    "%s",
 	Aliases: []string{},
@@ -209,7 +225,7 @@ func Run(c *cli.Context) error {
 
 	return nil
 }
-`, grpcName, grpcName, grpcName, handlerStr, handlerRegister)
+`, grpcName, pkgStr, grpcName, grpcName, handlerStr, handlerRegister)
 	fileBuffer.WriteString(cmd)
 	fileForceWriter(fileBuffer, homedir+"/"+file.CamelToUnderline(grpcName)+".go")
 }

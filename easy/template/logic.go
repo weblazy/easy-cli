@@ -19,7 +19,7 @@ import (
 	"github.com/weblazy/easy/utils/http/http_server/service"
 )
     // %s
-	func %s(svcCtx *service.ServiceContext, req *def.%sRequest) service.Response {
+	func %s(svcCtx *service.ServiceContext, req *def.%sRequest) *service.Response {
 
 		return nil
 	}

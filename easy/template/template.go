@@ -136,7 +136,7 @@ func createModel(root, name string) {
 		dbUpdate += `
 				err = orm.NewOrUpdateDB(conf.DB` + strings.Title(v1.Name) + `)
 				if err != nil {
-					glog.Error(err)
+					elog.ErrorCtx(context.Background(), "InitMysqlErr", elog.FieldError(err))
 				}
 		`
 		InitDB += `orm.NewDB(conf.DB` + strings.Title(v1.Name) + `)` + "\n" + v1.Name + `.SchemaMigrate()` + "\n"
@@ -185,7 +185,7 @@ prefix = ""
 				dbUpdateRedis += `		
 				err = redis.NewOrUpdateRedis(conf.` + strings.Title(v1.Name) + strings.Title(k2) + `Redis)
 				if err != nil {
-					glog.Error(err)
+					elog.ErrorCtx(context.Background(), "InitRedisErr", elog.FieldError(err))
 				}
 		`
 			}
@@ -246,7 +246,7 @@ func createCronjob(name, root string) {
 		jobPath := handlerDir + file.CamelToUnderline(v1.Job.Name) + ".go"
 		FromCronJob(v1.Job.Name, v1.Job.Comment, fileBuffer)
 		fileForceWriter(fileBuffer, jobPath)
-		cronjobs += "_,_ = cronJob.AddFunc(\"" + v1.Spec + "\", cronjob." + v1.Job.Name + ")\n"
+		cronjobs += "_,_ = cronJob.AddFunc(\"" + v1.Spec + "\", handler." + v1.Job.Name + ")\n"
 	}
 
 	FromCmdCronJob(name, cronjobs, fileBuffer)
@@ -288,7 +288,7 @@ func ` + v1.Name + `(c *cli.Context) error {
 	// 初始化必要内容
 	cmd.InitConf()
 	cmd.InitDB()
-	job.` + v1.Name + `()
+	handler.` + v1.Name + `()
 	return nil
 }
 `
