@@ -25,15 +25,15 @@ import (
 	"github.com/weblazy/easy/utils/conf/viper"
 	"github.com/sunmi-OS/gocore/v2/utils"
 )
+var DB *gorm.DB
 
-func Orm() *gorm.DB {
-	db := orm.GetORM(conf.DB`)
-	buffer.WriteString(strings.Title(dbName))
-	buffer.WriteString(`)
+func GetDB() *gorm.DB {
+	`)
+	buffer.WriteString(`
 	if 	viper.C.GetBool("base.debug") {
-		db = db.Debug()
+		return DB.Debug()
 	}
-	return db
+	return DB
 }
 
 func SchemaMigrate() {

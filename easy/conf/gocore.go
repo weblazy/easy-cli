@@ -33,6 +33,8 @@ type HttpApi struct {
 	Apis          []Api              `yaml:"apis"`
 	CommonHeaders []Header           `yaml:"common_headers"`
 	Params        map[string][]Param `yaml:"params"`
+	Mysqls        []string           //mysql列表
+
 }
 
 type Grpc struct {
@@ -41,6 +43,8 @@ type Grpc struct {
 	Port          string       `yaml:"port"` // 端口
 	GrpcServers   []GrpcServer `yaml:"apis"`
 	CommonHeaders []Header     `yaml:"common_headers"`
+	Mysqls        []string     //mysql列表
+
 }
 
 type Header struct {
@@ -92,7 +96,6 @@ type App struct {
 }
 
 type Config struct {
-	CNacos          bool    `yaml:"cNacos"`
 	CRocketMQConfig bool    `yaml:"cRocketMQConfig"`
 	CMysql          []Mysql `yaml:"cMysql"`
 	CRedis          []Redis `yaml:"cRedis"`
@@ -132,7 +135,6 @@ func GetGocoreConfig() *GoCore {
 			Version:     "v1.0.0",
 		},
 		Config: Config{
-			CNacos:          true,
 			CRocketMQConfig: true,
 			CMysql: []Mysql{
 				{

@@ -2,6 +2,7 @@ package template
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"time"
 
@@ -119,27 +120,32 @@ func createErrCode(root, homedir string, httpApi conf.HttpApi) {
 func createModel(root, name string) {
 	mysqlMap := goCoreConfig.Config.CMysql
 	pkgs := ""
-	dbUpdate := ""
-	dbUpdateRedis := ""
+	// dbUpdate := ""
+	// dbUpdateRedis := ""
 	baseConf := ""
-	if len(goCoreConfig.Config.CRedis) > 0 {
-		dbUpdateRedis = "var err error"
-	}
-	if len(mysqlMap) > 0 {
-		dbUpdate = "var err error"
-	}
+	// if len(goCoreConfig.Config.CRedis) > 0 {
+	// 	dbUpdateRedis = "var err error"
+	// }
+	// if len(mysqlMap) > 0 {
+	// 	dbUpdate = "var err error"
+	// }
 	InitDB := ""
 	initRedis := ""
 	for _, v1 := range mysqlMap {
 		pkgs += `"` + name + `/model/` + v1.Name + `"` + "\n"
 		dir := root + "/model/" + v1.Name
-		dbUpdate += `
-				err = orm.NewOrUpdateDB(conf.DB` + strings.Title(v1.Name) + `)
-				if err != nil {
-					elog.ErrorCtx(context.Background(), "InitMysqlErr", elog.FieldError(err))
-				}
-		`
-		InitDB += `orm.NewDB(conf.DB` + strings.Title(v1.Name) + `)` + "\n" + v1.Name + `.SchemaMigrate()` + "\n"
+		// dbUpdate += `
+		// 		err = orm.NewOrUpdateDB(conf.DB` + strings.Title(v1.Name) + `)
+		// 		if err != nil {
+		// 			elog.ErrorCtx(context.Background(), "InitMysqlErr", elog.FieldError(err))
+		// 		}
+		// `
+		InitDB += fmt.Sprintf(`%sDb, err := emysql.NewMysqlClient(Conf.%sMysqlConfig)
+	if err != nil {
+		panic(err)
+	}
+	%s.DB = %sDb.DB
+	%s.SchemaMigrate()`, v1.Name, strings.Title(v1.Name), v1.Name, v1.Name, v1.Name)
 		err := file.MkdirIfNotExist(dir)
 		if err != nil {
 			panic(err)
@@ -150,7 +156,7 @@ func createModel(root, name string) {
 		for _, v2 := range tables {
 			tableName := v2.Name
 			tableStruct := file.UnderlineToCamel(v2.Name)
-			tableStr += "_ = Orm().Set(\"gorm:table_options\", \"CHARSET=utf8mb4 comment='" + v2.Comment + "' AUTO_INCREMENT=1;\").AutoMigrate(&" + tableStruct + "{})\n"
+			tableStr += "_ = GetDB().Set(\"gorm:table_options\", \"CHARSET=utf8mb4 comment='" + v2.Comment + "' AUTO_INCREMENT=1;\").AutoMigrate(&" + tableStruct + "{})\n"
 			tabelPath := dir + "/" + tableName + ".go"
 			fieldStr := ""
 			fields := v2.Fields
@@ -181,13 +187,8 @@ prefix = ""
 
 				baseConf += `[` + v1.Name + `.redisDB]
 ` + k2 + ` = ` + cast.ToString(v1.Index[k2])
-				initRedis += "redis.NewRedis(conf." + strings.Title(v1.Name) + strings.Title(k2) + "Redis)\n"
-				dbUpdateRedis += `		
-				err = redis.NewOrUpdateRedis(conf.` + strings.Title(v1.Name) + strings.Title(k2) + `Redis)
-				if err != nil {
-					elog.ErrorCtx(context.Background(), "InitRedisErr", elog.FieldError(err))
-				}
-		`
+				initRedis += fmt.Sprintf(`%sRedis = eredis.NewRedisClient(Conf.%SRedis)
+`, strings.Title(v1.Name), strings.Title(v1.Name))
 			}
 		}
 		if goCoreConfig.Config.CRocketMQConfig {
@@ -203,19 +204,10 @@ Namespace = ""
 		}
 
 	}
-	if !goCoreConfig.Config.CNacos {
-		FromConfLocal("DevConfig", localConf, fileBuffer)
-		fileWriter(fileBuffer, root+"/conf/dev.go")
-		FromConfLocal("TestConfig", localConf, fileBuffer)
-		fileWriter(fileBuffer, root+"/conf/test.go")
-		FromConfLocal("UatConfig", localConf, fileBuffer)
-		fileWriter(fileBuffer, root+"/conf/uat.go")
-		FromConfLocal("OnlConfig", localConf, fileBuffer)
-		fileWriter(fileBuffer, root+"/conf/onl.go")
-	}
+
 	FromConfLocal("LocalConfig", localConf, fileBuffer)
 	fileWriter(fileBuffer, root+"/conf/local.go")
-	FromCmdInit(name, pkgs, dbUpdate, InitDB, initRedis, dbUpdateRedis, fileBuffer)
+	FromCmdInit(name, pkgs, InitDB, initRedis, fileBuffer)
 	fileForceWriter(fileBuffer, root+"/cmd/init.go")
 
 	FromConfBase(baseConf, fileBuffer)
