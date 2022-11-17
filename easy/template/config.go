@@ -71,6 +71,6 @@ func initMysql() {
 // initRedis 初始化redis服务
 func initRedis() {
 	%s
-}`,pkgs,name,configStr,configVar,InitMysql,InitRedis))
+}`,pkgs,configStr,configVar,InitMysql,InitRedis))
 
 }

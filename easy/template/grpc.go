@@ -37,8 +37,8 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 	if err != nil {
 		panic(err)
 	}
-	configStr := "	HttpServerConfig *grpc_server_config.Config"
-	configVar := "	HttpServerConfig: grpc_server_config.DefaultConfig(),"
+	configStr := "	GrpcServerConfig *grpc_server_config.Config"
+	configVar := "	GrpcServerConfig: grpc_server_config.DefaultConfig(),"
 	FromConfigInit(name, "", configStr, configVar, "", "", fileBuffer)
 	fileForceWriter(fileBuffer, configDir+"config.go")
 

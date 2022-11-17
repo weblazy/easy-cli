@@ -41,7 +41,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func %sInterceptor(cfg *config.Config, group *gin.RouterGroup) {
+func %sInterceptor(group *gin.RouterGroup) {
 
 }
 `,homedir,handlerName)

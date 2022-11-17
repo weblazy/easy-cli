@@ -64,7 +64,7 @@ func createApi(root, name, homedir, homePath string, httpApi conf.HttpApi) {
 	for _, v1 := range handlersList {
 		handlerName := v1.ModuleName
 		routesStr += "\n" + handlerName + "Group:=router.Group(\"" + v1.Prefix + "\")\n"
-		routesStr += fmt.Sprintf("\n%sInterceptor(cfg, %sGroup)\n", handlerName, handlerName)
+		routesStr += fmt.Sprintf("\n%sInterceptor(%sGroup)\n", handlerName, handlerName)
 		routesPkg += fmt.Sprintf("\"%s/handler/%s\"\n", homePath, handlerName)
 		// handlerPath := handlerDir + file.CamelToUnderline(handlerName) + ".go"
 		routes := v1.Handle

@@ -120,8 +120,12 @@ func createConf(root string, name string) {
 	fileForceWriter(fileBuffer, root+"/conf/const.go")
 	fileBuffer.WriteString(fmt.Sprintf(`package common
 import "github.com/weblazy/easy/utils/econfig/eviper"
-var Viper *eviper.Viper
-`))
+var (
+	Viper *eviper.Viper
+ 	ProjectName    = "%s"
+ 	ProjectVersion = "%s"
+)
+`, goCoreConfig.Service.ProjectName, goCoreConfig.Service.Version))
 	fileForceWriter(fileBuffer, root+"/common/common.go")
 }
 
