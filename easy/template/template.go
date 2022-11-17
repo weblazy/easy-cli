@@ -207,8 +207,8 @@ Namespace = ""
 
 	FromConfLocal("LocalConfig", localConf, fileBuffer)
 	fileWriter(fileBuffer, root+"/conf/local.go")
-	FromCmdInit(name, pkgs, InitDB, initRedis, fileBuffer)
-	fileForceWriter(fileBuffer, root+"/cmd/init.go")
+	// FromConfigInit(name, pkgs, InitDB, initRedis, fileBuffer)
+	// fileForceWriter(fileBuffer, root+"/cmd/init.go")
 
 	FromConfBase(baseConf, fileBuffer)
 	fileForceWriter(fileBuffer, root+"/conf/base.go")
@@ -220,11 +220,21 @@ func createCronjob(name, root string) {
 		return
 	}
 
-	dir := root + "/cronjobs/"
+	dir := root + "/cronjobs"
 	err := file.MkdirIfNotExist(dir)
 	if err != nil {
 		panic(err)
 	}
+
+	configDir := dir + "/config/"
+	err = file.MkdirIfNotExist(configDir)
+	if err != nil {
+		panic(err)
+	}
+	configStr := ""
+	configVar := ""
+	FromConfigInit(name, "", configStr, configVar, "", "", fileBuffer)
+	fileForceWriter(fileBuffer, configDir+"config.go")
 
 	handlerDir := dir + "/handler/"
 	err = file.MkdirIfNotExist(handlerDir)
@@ -252,11 +262,21 @@ func createJob(name, root string) {
 		return
 	}
 
-	dir := root + "/jobs/"
+	dir := root + "/jobs"
 	err := file.MkdirIfNotExist(dir)
 	if err != nil {
 		panic(err)
 	}
+
+	configDir := dir + "/config/"
+	err = file.MkdirIfNotExist(configDir)
+	if err != nil {
+		panic(err)
+	}
+	configStr := ""
+	configVar := ""
+	FromConfigInit(name, "", configStr, configVar, "", "", fileBuffer)
+	fileForceWriter(fileBuffer, configDir+"config.go")
 
 	handlerDir := dir + "/handler/"
 	err = file.MkdirIfNotExist(handlerDir)
@@ -286,7 +306,7 @@ func ` + v1.Name + `(c *cli.Context) error {
 	}
 
 	FromCmdJob(name, jobCmd, jobFunctions, fileBuffer)
-	fileForceWriter(fileBuffer, root+"/jobs/jobs.go")
+	fileForceWriter(fileBuffer, dir+"/jobs.go")
 }
 
 // ------------------------------------------------------------------------------

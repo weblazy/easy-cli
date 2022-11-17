@@ -32,6 +32,16 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 		panic(err)
 	}
 
+	configDir := homedir + "/config/"
+	err = file.MkdirIfNotExist(configDir)
+	if err != nil {
+		panic(err)
+	}
+	configStr := "	HttpServerConfig *grpc_server_config.Config"
+	configVar := "	HttpServerConfig: grpc_server_config.DefaultConfig(),"
+	FromConfigInit(name, "", configStr, configVar, "", "", fileBuffer)
+	fileForceWriter(fileBuffer, configDir+"config.go")
+
 	logicDir := homedir + "/logic/"
 	err = file.MkdirIfNotExist(logicDir)
 	if err != nil {

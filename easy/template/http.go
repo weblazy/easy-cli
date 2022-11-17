@@ -38,6 +38,15 @@ func createApi(root, name, homedir, homePath string, httpApi conf.HttpApi) {
 	if err != nil {
 		panic(err)
 	}
+	configDir := homedir + "/config/"
+	err = file.MkdirIfNotExist(configDir)
+	if err != nil {
+		panic(err)
+	}
+	configStr := "	HttpServerConfig *http_server_config.Config"
+	configVar := "	HttpServerConfig: http_server_config.DefaultConfig(),"
+	FromConfigInit(name, "", configStr, configVar, "", "", fileBuffer)
+	fileForceWriter(fileBuffer, configDir+"config.go")
 
 	logicDir := homedir + "/logic/"
 	err = file.MkdirIfNotExist(logicDir)

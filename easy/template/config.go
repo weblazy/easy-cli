@@ -5,7 +5,7 @@ package template
 
 import "bytes"
 
-func FromCmdInit(name, pkgs, InitDB, InitCache string, buffer *bytes.Buffer) {
+func FromConfigInit(name, pkgs,configStr,configVar, InitMysql, InitRedis string, buffer *bytes.Buffer) {
 	buffer.WriteString(`
 package cmd
 
@@ -27,6 +27,7 @@ import (
 
 type Config struct {
 	BaseConfig       struct{}
+	%s
 	HttpServerConfig *http_server_config.Config
 	AppMysql         *emysql_config.Config
 	AppRedis         *eredis_config.Config
@@ -34,6 +35,7 @@ type Config struct {
 
 var Conf = Config{
 	BaseConfig:       struct{}{},
+	%s
 	HttpServerConfig: http_server_config.DefaultConfig(),
 	AppMysql:         emysql_config.DefaultConfig(),
 	AppRedis:         eredis_config.DefaultConfig(),
@@ -78,7 +80,7 @@ func InitConf() {
 	case econfig.NacosType:
 		nacos.NewNacosEnv()
 		vt := nacos.GetViper()
-		vt.SetBaseConfig(conf.BaseConfig)
+		vt.SetBaseConfig(Conf.BaseConfig)
 		vt.SetDataIds(os.Getenv("ServiceName"), os.Getenv("DataId"))
 		// 注册配置更新回调
 		vt.NacosToViper()
@@ -97,14 +99,14 @@ func InitConf() {
 // initMysql 初始化mysql服务
 func initMysql() {
 	`)
-	buffer.WriteString(InitDB)
+	buffer.WriteString(InitMysql)
 	buffer.WriteString(`
 }
 
 // initRedis 初始化redis服务
 func initRedis() {
 	`)
-	buffer.WriteString(InitCache)
+	buffer.WriteString(InitRedis)
 	buffer.WriteString(`
 }`)
 
