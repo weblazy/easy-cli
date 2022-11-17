@@ -18,7 +18,7 @@ import (
 
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
-	"github.com/weblazy/easy/utils/conf/viper"
+	"github.com/weblazy/easy/utils/econfig/eviper"
 	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/weblazy/easy/utils/closes"
 	"github.com/urfave/cli/v2"

@@ -3,32 +3,31 @@
 // DO NOT EDIT!
 package template
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
 func FromConfigInit(name, pkgs,configStr,configVar, InitMysql, InitRedis string, buffer *bytes.Buffer) {
-	buffer.WriteString(`
+	buffer.WriteString(fmt.Sprintf(`
 package cmd
 
 import (
-	`)
-	buffer.WriteString(pkgs)
-	buffer.WriteString(`
-	"`)
-	buffer.WriteString(name)
-	buffer.WriteString(`/conf"
+	%s
 
-	"github.com/weblazy/easy/utils/conf/nacos"
+	"%s/conf"
+
+	"github.com/weblazy/easy/utils/econfig/nacos"
 	"github.com/sunmi-OS/gocore/v2/db/orm"
 	"github.com/sunmi-OS/gocore/v2/db/redis"
 	"github.com/weblazy/easy/utils/elog"
 	"github.com/sunmi-OS/gocore/v2/utils"
-	"github.com/weblazy/easy/utils/conf/viper"
+	"github.com/weblazy/easy/utils/econfig/eviper"
 )
 
 type Config struct {
 	BaseConfig       struct{}
 	%s
-	HttpServerConfig *http_server_config.Config
 	AppMysql         *emysql_config.Config
 	AppRedis         *eredis_config.Config
 }
@@ -36,41 +35,14 @@ type Config struct {
 var Conf = Config{
 	BaseConfig:       struct{}{},
 	%s
-	HttpServerConfig: http_server_config.DefaultConfig(),
 	AppMysql:         emysql_config.DefaultConfig(),
 	AppRedis:         eredis_config.DefaultConfig(),
 }
 
 var Redis *eredis.RedisClient
 
-var LocalConfig = `+"`"+`
-[base]
-debug = true
-
-[dbApp]
-Host = ""           #数据库连接地址
-Name = "app"           #数据库名称
-User = ""           #数据库用户名
-Passwd = ""         #数据库密码
-Port = "3306"       #数据库端口号
-
-[default]
-host = "" 
-port = ":6379"
-auth = ""
-prefix = ""
-
+var LocalConfig = ""
 			
-[aliyunmq]
-NameServer = ""
-AccessKey = ""
-SecretKey = ""
-Namespace = ""
-
-			
-`+"`"+`
-
-
 func InitConf() {
 	switch os.Getenv(econfig.EasyConfigType) {
 	case econfig.LocalType:
@@ -92,22 +64,16 @@ func InitConf() {
 
 	initMysql()
 	initRedis()
-	`)
-	buffer.WriteString(`
 }
 
 // initMysql 初始化mysql服务
 func initMysql() {
-	`)
-	buffer.WriteString(InitMysql)
-	buffer.WriteString(`
+	%s
 }
 
 // initRedis 初始化redis服务
 func initRedis() {
-	`)
-	buffer.WriteString(InitRedis)
-	buffer.WriteString(`
-}`)
+	%s
+}`,pkgs,name,configStr,configVar,InitMysql,InitRedis))
 
 }

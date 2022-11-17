@@ -12,7 +12,7 @@ package cronjobs
 import (
 	"`)
 	buffer.WriteString(name)
-	buffer.WriteString(`/app/cronjobs"
+	buffer.WriteString(`/cronjobs/config"
 	"github.com/robfig/cron/v3"
 	"github.com/weblazy/easy/utils/closes"
 	"github.com/urfave/cli/v2"

@@ -12,7 +12,7 @@ package jobs
 import (
 	"`)
 	buffer.WriteString(name)
-	buffer.WriteString(`/app/jobs"
+	buffer.WriteString(`/jobs/config"
 	"github.com/urfave/cli/v2"
 	"github.com/weblazy/easy/utils/closes"
 )

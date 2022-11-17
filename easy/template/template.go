@@ -96,6 +96,11 @@ func createMain(root, name string) {
 func createConf(root string, name string) {
 	FromConfConst(name, fileBuffer)
 	fileForceWriter(fileBuffer, root+"/conf/const.go")
+	fileBuffer.WriteString(fmt.Sprintf(`package common
+import "github.com/weblazy/easy/utils/econfig/eviper"
+var Viper *eviper.Viper
+`))
+	fileForceWriter(fileBuffer, root+"/common/common.go")
 }
 
 func createDockerfile(root string) {
@@ -252,7 +257,7 @@ func createCronjob(name, root string) {
 	}
 
 	FromCmdCronJob(name, cronjobs, fileBuffer)
-	fileForceWriter(fileBuffer, dir+"cronjobs.go")
+	fileForceWriter(fileBuffer, dir+"/cronjobs.go")
 }
 
 func createJob(name, root string) {
