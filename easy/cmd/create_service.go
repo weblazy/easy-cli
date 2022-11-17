@@ -58,11 +58,13 @@ func creatService(c *cli.Context) error {
 		}
 	} else {
 		printHint("Run go mod init.")
-		resp, err := utils.Cmd("go", []string{"mod", "init", config.Service.ProjectName})
-		if err != nil {
-			fmt.Println(resp)
-			panic(err)
-		}
+		// resp, err := utils.Cmd("go", []string{"mod", "init", config.Service.ProjectName})
+		// if err != nil {
+		// 	fmt.Println(resp)
+		// 	panic(err)
+		// }
+		template.CreateMod(root, config)
+
 	}
 
 	template.CreateCode(root, config.Service.ProjectName, config)

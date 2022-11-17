@@ -54,6 +54,28 @@ func CreateCode(root, name string, config *conf.GoCore) {
 
 }
 
+func CreateMod(root string, config *conf.GoCore) {
+	var fileBuffer = new(bytes.Buffer)
+
+	fileBuffer.WriteString(fmt.Sprintf(`module %s
+
+require (
+	github.com/gin-contrib/gzip v0.0.6
+	github.com/gin-gonic/gin v1.8.1
+	github.com/robfig/cron/v3 v3.0.1
+	github.com/sunmi-OS/gocore/v2 v2.0.10
+	github.com/urfave/cli/v2 v2.3.0
+	github.com/weblazy/easy master
+	github.com/weblazy/gocore v1.8.0
+	google.golang.org/grpc v1.47.0
+	google.golang.org/protobuf v1.28.0
+	gorm.io/gorm v1.23.5
+)
+
+`, config.Service.ProjectName))
+	fileForceWriter(fileBuffer, root+"/mod.go")
+}
+
 // CreateField 创建gorm对应的字段
 func CreateField(field string) string {
 	tags := strings.Split(field, ";")
@@ -192,7 +214,7 @@ prefix = ""
 
 				baseConf += `[` + v1.Name + `.redisDB]
 ` + k2 + ` = ` + cast.ToString(v1.Index[k2])
-				initRedis += fmt.Sprintf(`%sRedis = eredis.NewRedisClient(Conf.%SRedis)
+				initRedis += fmt.Sprintf(`%sRedis = eredis.NewRedisClient(Conf.%sRedis)
 `, strings.Title(v1.Name), strings.Title(v1.Name))
 			}
 		}
@@ -336,7 +358,7 @@ func unResetfileWriter(buffer *bytes.Buffer, path string) {
 func mkdir(root string) {
 	var dirList = []string{
 		"/common",
-		"/cmd",
+		// "/cmd",
 		// "/app/domain",
 		"/model",
 		// "/app/errcode",

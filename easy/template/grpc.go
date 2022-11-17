@@ -86,12 +86,10 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 
 		fileBuffer.WriteString(fmt.Sprintf(`package %s
 		type %sServer struct{
-			svcCtx *svc.ServiceContext		
 		}
 
-		func New%sServer(svcCtx *svc.ServiceContext) *%sServer {
+		func New%sServer() *%sServer {
 			return &%sServer{
-				svcCtx: svcCtx,
 			}
 		}
 		`, handlerName, strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName)))
