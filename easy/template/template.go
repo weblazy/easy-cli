@@ -73,7 +73,7 @@ require (
 )
 
 `, config.Service.ProjectName))
-	fileForceWriter(fileBuffer, root+"/mod.go")
+	fileForceWriter(fileBuffer, root+"/go.mod")
 }
 
 // CreateField 创建gorm对应的字段
