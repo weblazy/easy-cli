@@ -10,12 +10,10 @@ import (
 
 func FromConfigInit(name, pkgs,configStr,configVar, InitMysql, InitRedis string, buffer *bytes.Buffer) {
 	buffer.WriteString(fmt.Sprintf(`
-package cmd
+package config
 
 import (
 	%s
-
-	"%s/conf"
 
 	"github.com/weblazy/easy/utils/econfig/nacos"
 	"github.com/sunmi-OS/gocore/v2/db/orm"
@@ -52,7 +50,6 @@ func InitConf() {
 	case econfig.NacosType:
 		nacos.NewNacosEnv()
 		vt := nacos.GetViper()
-		vt.SetBaseConfig(Conf.BaseConfig)
 		vt.SetDataIds(os.Getenv("ServiceName"), os.Getenv("DataId"))
 		// 注册配置更新回调
 		vt.NacosToViper()

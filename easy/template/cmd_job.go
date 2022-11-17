@@ -3,16 +3,17 @@
 // DO NOT EDIT!
 package template
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
 func FromCmdJob(name, jobCmd, jobFunctions string, buffer *bytes.Buffer) {
-	buffer.WriteString(`
+	buffer.WriteString(fmt.Sprintf(`
 package jobs
 
 import (
-	"`)
-	buffer.WriteString(name)
-	buffer.WriteString(`/jobs/config"
+	"%s/jobs/config"
 	"github.com/urfave/cli/v2"
 	"github.com/weblazy/easy/utils/closes"
 )
@@ -23,12 +24,10 @@ var Cmd = &cli.Command{
 	Aliases: []string{"j"},
 	Usage:   "job",
 	Subcommands: []*cli.Command{
-		`)
-	buffer.WriteString(jobCmd)
-	buffer.WriteString(`
+		%s
 	},
 }
-`)
-	buffer.WriteString(jobFunctions)
 
+%s
+`,name,jobCmd,jobFunctions))
 }
