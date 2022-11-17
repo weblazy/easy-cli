@@ -5,7 +5,6 @@ package template
 
 import (
 	"bytes"
-	"strings"
 )
 
 func FromModel(dbName, tabels string, buffer *bytes.Buffer) {
