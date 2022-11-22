@@ -62,7 +62,7 @@ func createGrpcProtoHandler(root, name, homePath, homedir string, grpc conf.Grpc
 		handlerName := v1.ModuleName
 
 		handlerStr += fmt.Sprintf("%sService := handler.New%sService()\n", handlerName, strings.Title(handlerName))
-		handlerRegister += fmt.Sprintf("%s.Register%sServer(s, %sService)", handlerName, strings.Title(handlerName), handlerName)
+		handlerRegister += fmt.Sprintf("%s.Register%sServiceServer(s, %sService)", handlerName, strings.Title(handlerName), handlerName)
 		serviceProtoDir := protoDir + file.CamelToUnderline(handlerName) + "/"
 		err = file.MkdirIfNotExist(serviceProtoDir)
 		if err != nil {
@@ -116,8 +116,8 @@ func createGrpcProtoHandler(root, name, homePath, homedir string, grpc conf.Grpc
 		CreateProto(fileBuffer, handlerName, params, rpcFunc)
 		fileForceWriter(fileBuffer, serviceProtoDir+file.CamelToUnderline(handlerName)+".proto")
 		createPb(serviceProtoDir + file.CamelToUnderline(handlerName) + ".proto")
-		pkgStr += "\"" + homePath + "/" + file.CamelToUnderline(handlerName) + "_logic\"\n"
-
+		// pkgStr += "\"" + homePath + "/" + file.CamelToUnderline(handlerName) + "_logic\"\n"
+		pkgStr += "\"" + homePath + "/proto/" + file.CamelToUnderline(handlerName) + "\"\n"
 	}
 	pkgStr += "\"" + homePath + "/handler\"\n"
 	GreateCmd(grpc.Name, homedir, pkgStr, handlerStr, handlerRegister)
@@ -134,7 +134,7 @@ option go_package = "./%s";
 %s
 
 service %sService{
-	%s
+%s
 }
 `, service, service, param, strings.Title(service), rpcFunc))
 
@@ -148,7 +148,7 @@ func createRpcParam(handle conf.Handle) string {
 	}
 
 	req := fmt.Sprintf(`message %sRequest{
-  %s
+%s
 }
 `, handle.Name, params)
 	code := "code"
@@ -184,7 +184,7 @@ func createRpcParam(handle conf.Handle) string {
 		params += fmt.Sprintf("  %s %s = %d;\n", v3.Type, v3.Name, k1+1)
 	}
 	resp := fmt.Sprintf(`message %sResponse{
-  %s
+%s
 }
 `, strings.Title(handle.Name), params)
 
@@ -200,7 +200,7 @@ func createRpcParams(paramsMap map[string][]conf.Param) string {
 		}
 
 		paramStr += fmt.Sprintf(`message %s{
-  %s
+%s
 }`, strings.Title(k1), paramStrContent)
 	}
 

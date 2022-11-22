@@ -11,7 +11,7 @@ import (
 	"github.com/weblazy/easy-cli/easy/conf"
 )
 
-func FromHttpHandler(homePath, homedir, handlerName string, comments []string, functions []string, buffer *bytes.Buffer) {
+func FromHttpHandler(httpName,homePath, homedir, handlerName string, comments []string, functions []string, buffer *bytes.Buffer) {
 	pkgStr := ""
 	funcStr := ""
 	for k1, v1 := range functions {
@@ -42,7 +42,7 @@ import (
 )
 
 %s
-`, handlerName, pkgStr, funcStr))
+`, httpName, pkgStr, funcStr))
 }
 
 func FromRpcHandler(homePath, handlerName string, functions []conf.Handle, buffer *bytes.Buffer) {
@@ -50,13 +50,14 @@ func FromRpcHandler(homePath, handlerName string, functions []conf.Handle, buffe
 	funcStr := ""
 	service := fmt.Sprintf(`
 		type %sService struct{
+			%s.Unimplemented%sServiceServer
 		}
 
 		func New%sService() *%sService {
 			return &%sService{
 			}
 		}
-		`,  strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName))
+		`,  strings.Title(handlerName),handlerName,strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName))
 	for k1 := range functions {
 		v1 := functions[k1]
 		funcName := strings.Title(v1.Name)
@@ -74,10 +75,10 @@ func FromRpcHandler(homePath, handlerName string, functions []conf.Handle, buffe
 		}
 		err := %s_logic.%s(svcCtx)
 		if err != nil {
-			svcCtx.Response.Code = err.Code
-			svcCtx.Response.Msg = err.Msg
+			svcCtx.Res.Code = err.Code
+			svcCtx.Res.Msg = err.Msg
 		}
-		return svcCtx.Response, nil
+		return svcCtx.Res, nil
 	}
 	`, v1.Comment, strings.Title(handlerName), funcName, handlerName, funcName, handlerName, funcName, handlerName, funcName, handlerName, funcName, handlerName, funcName)
 	}

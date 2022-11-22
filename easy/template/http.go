@@ -104,14 +104,14 @@ func createApi(root, name, homedir, homePath string, httpApi conf.HttpApi) {
 			// }
 			functions = append(functions, function)
 			comments = append(comments, v2.Comment)
-			routesStr += handlerName + "Group." + v2.Method + "(\"/" + file.CamelToUnderline(handlerName) + "/" + file.CamelToUnderline(route) + "\"," + handlerName + "." + function + ") //" + v2.Comment + "\n"
+			routesStr += handlerName + "Group." + v2.Method + "(\"/" + file.CamelToUnderline(handlerName) + "/" + file.CamelToUnderline(route) + "\"," + "handler." + function + ") //" + v2.Comment + "\n"
 			// FromDomain(name, handler, function, req, fileBuffer)
 			// fileForceWriter(fileBuffer, domainDir+file.CamelToUnderline(route)+".go")
 
 			FromHttpLogic(homePath, handlerName, function, v2.Comment, fileBuffer)
 			fileForceWriter(fileBuffer, logicDir+file.CamelToUnderline(handlerName)+"/"+file.CamelToUnderline(function)+".go")
 		}
-		FromHttpHandler(homePath, homedir, handlerName, comments, functions, fileBuffer)
+		FromHttpHandler(httpApi.Name, homePath, homedir, handlerName, comments, functions, fileBuffer)
 		fileForceWriter(fileBuffer, handlerDir+file.CamelToUnderline(handlerName)+".go")
 
 		fileBuffer.WriteString(CreateInterceptor(homePath, handlerName))
