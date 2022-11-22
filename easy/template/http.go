@@ -88,10 +88,10 @@ func createApi(root, name, homedir, homePath string, httpApi conf.HttpApi) {
 		// 	}
 		// 	handlerContent = string(content)
 		// }
-		err = file.MkdirIfNotExist(homedir + "/handler/" + handlerName)
-		if err != nil {
-			panic(err)
-		}
+		// err = file.MkdirIfNotExist(homedir + "/handler/" + handlerName)
+		// if err != nil {
+		// 	panic(err)
+		// }
 		err = file.MkdirIfNotExist(homedir + "/logic/" + handlerName)
 		if err != nil {
 			panic(err)
