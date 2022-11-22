@@ -13,21 +13,22 @@ import (
 func createGrpcs(root, name string) {
 	for _, v := range goCoreConfig.Grpcs {
 		homedir := root + "/grpcs/" + v.Name
-		createGrpcProtoHandler(root, name, homedir, v)
+		homePath := name + "/grpcs/" + v.Name
+		createGrpcProtoHandler(root, name, homePath, homedir, v)
 		// createGrpcHandler(root, name, homedir, v)
 		// createDef(root, homedir, v)
 		// createErrCode(root, homedir, v)
 	}
 }
 
-func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
+func createGrpcProtoHandler(root, name, homePath, homedir string, grpc conf.Grpc) {
 	handlersList := grpc.GrpcServers
 	if len(handlersList) == 0 {
 		return
 	}
 
-	apiDir := homedir + "/handler/"
-	err := file.MkdirIfNotExist(apiDir)
+	handlerDir := homedir + "/handler/"
+	err := file.MkdirIfNotExist(handlerDir)
 	if err != nil {
 		panic(err)
 	}
@@ -103,15 +104,12 @@ func createGrpcProtoHandler(root, name, homedir string, grpc conf.Grpc) {
 			function := strings.Title(route)
 			rpcFunc += fmt.Sprintf("  rpc %s(%sRequest) returns (%sResponse);", function, function, function)
 
-			logic := fmt.Sprintf(`
-			package %s
-			func (l *%sServer) %s(ctx context.Context, req *%s.%sRequest) (*%s.%sResponse, error) {
-					resp := &%s.%sResponse{}
-					return resp,nil
-}`, handlerName, strings.Title(handlerName), function, handlerName, function, handlerName, function, handlerName, function)
-			fileBuffer.WriteString(logic)
+			FromRpcLogic(handlerName, strings.Title(function), v2.Comment, fileBuffer)
 			fileForceWriter(fileBuffer, servicelogicDir+file.CamelToUnderline(route)+".go")
 		}
+
+		FromRpcHandler(homePath, handlerName, routes, fileBuffer)
+		fileForceWriter(fileBuffer, handlerDir+file.CamelToUnderline(handlerName)+".go")
 
 		params += createRpcParams(v1.Params)
 
@@ -151,9 +149,35 @@ func createRpcParam(handle conf.Handle) string {
   %s
 }
 `, handle.Name, params)
-
+	code := "code"
+	msg := "msg"
+	for k1 := range fields {
+		v1 := fields[k1]
+		if v1.Name == code {
+			code = ""
+		}
+		if v1.Name == msg {
+			msg = ""
+		}
+	}
+	fields = make([]conf.Param, 0)
+	if code != "" {
+		fields = append(fields, conf.Param{
+			Name:    code,
+			Type:    "int64",
+			Comment: "错误码",
+		})
+	}
+	if msg != "" {
+		fields = append(fields, conf.Param{
+			Name:    msg,
+			Type:    "string",
+			Comment: "错误描述",
+		})
+	}
 	params = ""
-	fields = handle.ResponseParams
+	fields = append(fields, handle.ResponseParams...)
+
 	for k1, v3 := range fields {
 		params += fmt.Sprintf("  %s %s = %d;\n", v3.Type, v3.Name, k1+1)
 	}

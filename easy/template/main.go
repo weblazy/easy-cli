@@ -11,8 +11,8 @@ package main
 
 import (
 	"os"`)
-	buffer.WriteString("\n\""+projectName+`/cmd"`)
-	buffer.WriteString("\n\""+projectName+`/common"
+	buffer.WriteString("\n\"" + projectName + `/cmd"`)
+	buffer.WriteString("\n\"" + projectName + `/common"
 
 	"github.com/weblazy/easy/utils/elog"
 	"github.com/sunmi-OS/gocore/v2/utils"

@@ -8,7 +8,7 @@ import (
 	"fmt"
 )
 
-func FromConfigInit(name, pkgs,configStr,configVar, InitMysql, InitRedis string, buffer *bytes.Buffer) {
+func FromConfigInit(name, pkgs, configStr, configVar, InitMysql, InitRedis string, buffer *bytes.Buffer) {
 	buffer.WriteString(fmt.Sprintf(`
 package config
 
@@ -71,6 +71,6 @@ func initMysql() {
 // initRedis 初始化redis服务
 func initRedis() {
 	%s
-}`,pkgs,configStr,configVar,InitMysql,InitRedis))
+}`, pkgs, configStr, configVar, InitMysql, InitRedis))
 
 }

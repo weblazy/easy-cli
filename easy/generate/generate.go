@@ -44,7 +44,7 @@ func Genertate(gormDb *gorm.DB, mysqlDb *conf.MysqlDb, config *conf.GoCore) *con
 	return config
 }
 
-//获取表信息
+// 获取表信息
 func getTables(gormDb *gorm.DB, databaseName string, tableNames []string) []def.Table {
 	var tables []def.Table
 	if len(tableNames) == 0 {
@@ -55,7 +55,7 @@ func getTables(gormDb *gorm.DB, databaseName string, tableNames []string) []def.
 	return tables
 }
 
-//获取所有字段信息
+// 获取所有字段信息
 func getFields(gormDb *gorm.DB, tableName string) []def.Field {
 	var fields []def.Field
 	gormDb.Raw("show FULL COLUMNS from " + tableName + ";").Find(&fields)

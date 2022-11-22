@@ -6,22 +6,18 @@ package template
 import (
 	"bytes"
 	"fmt"
+	"strings"
+
+	"github.com/weblazy/easy-cli/easy/conf"
 )
 
-func FromHandler(homePath,homedir,handlerName string , comments []string, functions []string,  buffer *bytes.Buffer) {
-
+func FromHttpHandler(homePath, homedir, handlerName string, comments []string, functions []string, buffer *bytes.Buffer) {
+	pkgStr := ""
+	funcStr := ""
 	for k1, v1 := range functions {
-		buffer.WriteString(fmt.Sprintf(`
-package %s
-
-import (
-	"%s/def"
-	"%s/logic/%s"
-
-	"github.com/gin-gonic/gin"
-	"github.com/weblazy/easy/utils/http/http_server/service"
-)
-    // %s
+		pkgStr += fmt.Sprintf(`"%s/logic/%s"`, homePath, v1) + "\n"
+		funcStr += fmt.Sprintf(`    
+	// %s
 	func %s(g *gin.Context) {
 		 svcCtx := service.NewServiceContext(g)
 		 req := new(def.%sRequest)
@@ -30,14 +26,63 @@ import (
 			svcCtx.Error(err)
 			return
 		 }
-		resp, code, err := %s.%s(svcCtx, req)
-		if err != nil {
-			svcCtx.ErrorCodeMsg(code, err.Error())
-			return
-		}
-		svcCtx.Success(resp)
+		svcCtx.Return(%s.%s(svcCtx, req))
 	}
-`,handlerName,homePath,homePath,handlerName, comments[k1],v1,v1,handlerName,v1))
+	`, comments[k1], v1, v1, handlerName, v1)
 	}
+	buffer.WriteString(fmt.Sprintf(`
+package handler
 
+import (
+	"%s/def"
+	%s
+
+	"github.com/gin-gonic/gin"
+	"github.com/weblazy/easy/utils/http/http_server/service"
+)
+
+%s
+`, handlerName, pkgStr, handlerName, funcStr))
+}
+
+func FromRpcHandler(homePath, handlerName string, functions []conf.Handle, buffer *bytes.Buffer) {
+	pkgStr := ""
+	funcStr := ""
+	for k1 := range functions {
+		v1 := functions[k1]
+		funcName := strings.Title(v1.Name)
+		pkgStr += fmt.Sprintf(`
+		"%s/logic/%s_logic"
+		"%s/proto/%s"
+		`, homePath, v1, homePath, v1)
+		funcStr += fmt.Sprintf(`  
+	// %s  
+	func (h *%s) %s(ctx context.Context, req *%s.%sRequest) (*%s.%sResponse, error) {
+		svcCtx := &%s_logic.%sCtx{
+			SvcContext: code_err.NewSvcContext(ctx),
+			Req:      req,
+			Res: new(%s.%sResponse),
+		}
+		err := %s_logic.%s(svcCtx)
+		if err != nil {
+			svcCtx.Response.Code = err.Code
+			svcCtx.Response.Msg = err.Msg
+		}
+		return svcCtx.Response, nil
+	}
+	`, v1.Comment, strings.Title(handlerName), funcName, handlerName, funcName, handlerName, funcName, handlerName, funcName, handlerName, funcName, handlerName, funcName)
+	}
+	buffer.WriteString(fmt.Sprintf(`
+package handler
+
+import (
+	"context"
+	"projec/grpcs/order_rpc/logic/user_logic"
+	"projec/grpcs/order_rpc/proto/user"
+
+	"github.com/weblazy/easy/utils/code_err"
+)
+
+%s
+`, pkgStr, funcStr))
 }

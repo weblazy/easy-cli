@@ -28,11 +28,11 @@ func Routes(router *gin.Engine) {
 	})
 	%s
 }
-    `,routesPkg,routes))
+    `, routesPkg, routes))
 
 }
 
-func CreateInterceptor(homedir,handlerName string)string{
+func CreateInterceptor(homedir, handlerName string) string {
 	return fmt.Sprintf(`package routes
 
 import (
@@ -44,5 +44,5 @@ import (
 func %sInterceptor(group *gin.RouterGroup) {
 
 }
-`,homedir,handlerName)
+`, homedir, handlerName)
 }

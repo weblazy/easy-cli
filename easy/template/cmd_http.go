@@ -8,7 +8,7 @@ import (
 	"fmt"
 )
 
-func FromCmdApi(serviceName,homePath string, buffer *bytes.Buffer) {
+func FromCmdApi(serviceName, homePath string, buffer *bytes.Buffer) {
 	buffer.WriteString(fmt.Sprintf(`
 package %s
 
@@ -55,6 +55,6 @@ func Run(c *cli.Context) error {
 		return err
 	}
 	return nil
-}`,serviceName,homePath,homePath))
+}`, serviceName, homePath, homePath))
 
 }

@@ -29,5 +29,5 @@ var Cmd = &cli.Command{
 }
 
 %s
-`,name,jobCmd,jobFunctions))
+`, name, jobCmd, jobFunctions))
 }

@@ -8,22 +8,42 @@ import (
 	"fmt"
 )
 
-func FromLogic(homePath,homedir,handlerName string , comments []string, functions []string,  buffer *bytes.Buffer) {
+func FromHttpLogic(homePath, handlerName, funcName, comment string, buffer *bytes.Buffer) {
 
-	for k1, v1 := range functions {
-		buffer.WriteString(fmt.Sprintf(`
+	buffer.WriteString(fmt.Sprintf(`
 package %s
 
 import (
 	"%s/def"
-	"github.com/weblazy/easy/utils/http/http_server/service"
-)
-    // %s
-	func %s(svcCtx *service.ServiceContext, req *def.%sRequest) *service.Response {
+	"github.com/weblazy/easy/utils/code_err"
 
+)
+
+    // %s
+	func %s(svcCtx *service.ServiceContext, req *def.%sRequest) *code_err.CodeErr{
 		return nil
 	}
-`,handlerName,homePath, comments[k1],v1,v1))
+`, handlerName, homePath, comment, funcName, funcName))
+
+}
+
+func FromRpcLogic(handlerName, funcName, comment string, buffer *bytes.Buffer) {
+	buffer.WriteString(fmt.Sprintf(`
+package %s_logic
+
+import (
+	"github.com/weblazy/easy/utils/code_err"
+
+)
+	type %sCtx struct {
+		*code_err.SvcContext
+		Req *user.%sRequest
+		Res *user.%sResponse
 	}
+    // %s
+	func %s(ctx *%sCtx) *code_err.CodeErr{
+		return nil
+	}
+`, handlerName, funcName, funcName, funcName, comment, funcName, funcName))
 
 }
