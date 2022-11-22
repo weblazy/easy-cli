@@ -42,22 +42,31 @@ import (
 )
 
 %s
-`, handlerName, pkgStr, handlerName, funcStr))
+`, handlerName, pkgStr, funcStr))
 }
 
 func FromRpcHandler(homePath, handlerName string, functions []conf.Handle, buffer *bytes.Buffer) {
 	pkgStr := ""
 	funcStr := ""
+	service := fmt.Sprintf(`
+		type %sService struct{
+		}
+
+		func New%sService() *%sService {
+			return &%sService{
+			}
+		}
+		`,  strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName))
 	for k1 := range functions {
 		v1 := functions[k1]
 		funcName := strings.Title(v1.Name)
 		pkgStr += fmt.Sprintf(`
 		"%s/logic/%s_logic"
 		"%s/proto/%s"
-		`, homePath, v1, homePath, v1)
+		`, homePath, handlerName, homePath, handlerName)
 		funcStr += fmt.Sprintf(`  
 	// %s  
-	func (h *%s) %s(ctx context.Context, req *%s.%sRequest) (*%s.%sResponse, error) {
+	func (h *%sService) %s(ctx context.Context, req *%s.%sRequest) (*%s.%sResponse, error) {
 		svcCtx := &%s_logic.%sCtx{
 			SvcContext: code_err.NewSvcContext(ctx),
 			Req:      req,
@@ -77,12 +86,10 @@ package handler
 
 import (
 	"context"
-	"projec/grpcs/order_rpc/logic/user_logic"
-	"projec/grpcs/order_rpc/proto/user"
-
+     %s
 	"github.com/weblazy/easy/utils/code_err"
 )
-
 %s
-`, pkgStr, funcStr))
+%s
+`, pkgStr, service, funcStr))
 }

@@ -61,8 +61,8 @@ func createGrpcProtoHandler(root, name, homePath, homedir string, grpc conf.Grpc
 	for _, v1 := range handlersList {
 		handlerName := v1.ModuleName
 
-		handlerStr += fmt.Sprintf("%sServer := %s.New%sServer()\n", handlerName, handlerName, strings.Title(handlerName))
-		handlerRegister += fmt.Sprintf("%s.Register%sServer(s, %sServer)", handlerName, strings.Title(handlerName), handlerName)
+		handlerStr += fmt.Sprintf("%sService := handler.New%sService()\n", handlerName, strings.Title(handlerName))
+		handlerRegister += fmt.Sprintf("%s.Register%sServer(s, %sService)", handlerName, strings.Title(handlerName), handlerName)
 		serviceProtoDir := protoDir + file.CamelToUnderline(handlerName) + "/"
 		err = file.MkdirIfNotExist(serviceProtoDir)
 		if err != nil {
@@ -70,7 +70,7 @@ func createGrpcProtoHandler(root, name, homePath, homedir string, grpc conf.Grpc
 		}
 		// fileForceWriter(fileBuffer, serviceProtoDir+file.CamelToUnderline(handlerName)+".go")
 
-		servicelogicDir := logicDir + file.CamelToUnderline(handlerName) + "/"
+		servicelogicDir := logicDir + file.CamelToUnderline(handlerName) + "_logic/"
 		err = file.MkdirIfNotExist(servicelogicDir)
 		if err != nil {
 			panic(err)
@@ -85,16 +85,16 @@ func createGrpcProtoHandler(root, name, homePath, homedir string, grpc conf.Grpc
 		// 	continue
 		// }
 
-		fileBuffer.WriteString(fmt.Sprintf(`package %s
-		type %sServer struct{
-		}
+		// fileBuffer.WriteString(fmt.Sprintf(`package %s
+		// type %sServer struct{
+		// }
 
-		func New%sServer() *%sServer {
-			return &%sServer{
-			}
-		}
-		`, handlerName, strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName)))
-		fileForceWriter(fileBuffer, servicelogicDir+file.CamelToUnderline(handlerName)+"_server.go")
+		// func New%sServer() *%sServer {
+		// 	return &%sServer{
+		// 	}
+		// }
+		// `, handlerName, strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName), strings.Title(handlerName)))
+		// fileForceWriter(fileBuffer, servicelogicDir+file.CamelToUnderline(handlerName)+"_server.go")
 
 		rpcFunc := ""
 		params := ""
@@ -116,8 +116,10 @@ func createGrpcProtoHandler(root, name, homePath, homedir string, grpc conf.Grpc
 		CreateProto(fileBuffer, handlerName, params, rpcFunc)
 		fileForceWriter(fileBuffer, serviceProtoDir+file.CamelToUnderline(handlerName)+".proto")
 		createPb(serviceProtoDir + file.CamelToUnderline(handlerName) + ".proto")
-		pkgStr += "\"" + name + "/grpcs/" + grpc.Name + "/" + file.CamelToUnderline(handlerName) + "\"\n"
+		pkgStr += "\"" + homePath + "/" + file.CamelToUnderline(handlerName) + "_logic\"\n"
+
 	}
+	pkgStr += "\"" + homePath + "/handler\"\n"
 	GreateCmd(grpc.Name, homedir, pkgStr, handlerStr, handlerRegister)
 }
 
