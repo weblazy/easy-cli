@@ -42,7 +42,7 @@ import (
 )
 
 %s
-`, httpName, pkgStr, funcStr))
+`, homePath, pkgStr, funcStr))
 }
 
 func FromRpcHandler(homePath, handlerName string, functions []conf.Handle, buffer *bytes.Buffer) {
