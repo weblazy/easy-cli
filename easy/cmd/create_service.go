@@ -31,7 +31,7 @@ var CreatService = &cli.Command{
 
 // creatService 创建服务并创建初始化配置
 func creatService(c *cli.Context) error {
-	config := conf.GetGocoreConfig()
+	config := conf.GetConfig()
 	yamlPath := c.String("config")
 	root := "."
 
@@ -90,7 +90,7 @@ func creatService(c *cli.Context) error {
 		fmt.Println(resp)
 		panic(err)
 	}
-	printHint("Welcome to GoCore, the project has been initialized.")
+	printHint("Welcome to Easy, the project has been initialized.")
 
 	return nil
 }

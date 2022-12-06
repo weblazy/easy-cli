@@ -21,13 +21,13 @@ var localConf = `
 debug = true
 `
 
-var goCoreConfig *conf.GoCore
+var easyConfig *conf.Config
 
 // CreateCode 更具配置文件生成项目
 // 模板引擎生成语句 hero -source=./tools/gocore/template -extensions=.got,.md,.docker
-func CreateCode(root, name string, config *conf.GoCore) {
+func CreateCode(root, name string, config *conf.Config) {
 
-	goCoreConfig = config
+	easyConfig = config
 	newProgress(11, "start preparing...")
 	time.Sleep(time.Second)
 	progressNext("Initialize the directory structure...")
@@ -54,7 +54,7 @@ func CreateCode(root, name string, config *conf.GoCore) {
 
 }
 
-func CreateMod(root string, config *conf.GoCore) {
+func CreateMod(root string, config *conf.Config) {
 	var fileBuffer = new(bytes.Buffer)
 
 	fileBuffer.WriteString(fmt.Sprintf(`module %s
@@ -99,16 +99,16 @@ func CreateField(field string) string {
 
 func createMain(root, name string) {
 	var cmdList []string
-	for _, v := range goCoreConfig.HttpApis {
+	for _, v := range easyConfig.HttpApis {
 		cmdList = append(cmdList, v.Name+".Cmd,")
 	}
-	for _, v := range goCoreConfig.Grpcs {
+	for _, v := range easyConfig.Grpcs {
 		cmdList = append(cmdList, v.Name+".Cmd,")
 	}
-	if len(goCoreConfig.CronJobs) > 0 {
+	if len(easyConfig.CronJobs) > 0 {
 		cmdList = append(cmdList, "cronjobs.Cmd,")
 	}
-	if len(goCoreConfig.Jobs) > 0 {
+	if len(easyConfig.Jobs) > 0 {
 		cmdList = append(cmdList, "jobs.Cmd,")
 	}
 	FromMain(name, cmdList, fileBuffer)
@@ -125,7 +125,7 @@ var (
  	ProjectName    = "%s"
  	ProjectVersion = "%s"
 )
-`, goCoreConfig.Service.ProjectName, goCoreConfig.Service.Version))
+`, easyConfig.Service.ProjectName, easyConfig.Service.Version))
 	fileForceWriter(fileBuffer, root+"/common/common.go")
 }
 
@@ -149,12 +149,12 @@ func createErrCode(root, homedir string, httpApi conf.HttpApi) {
 }
 
 func createModel(root, name string) {
-	mysqlMap := goCoreConfig.Config.CMysql
+	mysqlMap := easyConfig.MysqlList
 	pkgs := ""
 	// dbUpdate := ""
 	// dbUpdateRedis := ""
 	baseConf := ""
-	// if len(goCoreConfig.Config.CRedis) > 0 {
+	// if len(easyConfig.Config.RedisList) > 0 {
 	// 	dbUpdateRedis = "var err error"
 	// }
 	// if len(mysqlMap) > 0 {
@@ -206,7 +206,7 @@ func createModel(root, name string) {
 		FromConfMysql(v1.Name, buff)
 		localConf += buff.String()
 
-		for _, v1 := range goCoreConfig.Config.CRedis {
+		for _, v1 := range easyConfig.RedisList {
 			for k2 := range v1.Index {
 				localConf += `
 [` + v1.Name + `]
@@ -222,17 +222,6 @@ prefix = ""
 `, strings.Title(v1.Name), strings.Title(v1.Name))
 			}
 		}
-		if goCoreConfig.Config.CRocketMQConfig {
-			localConf += `
-			
-[aliyunmq]
-NameServer = ""
-AccessKey = ""
-SecretKey = ""
-Namespace = ""
-
-			`
-		}
 
 	}
 
@@ -246,7 +235,7 @@ Namespace = ""
 }
 
 func createCronjob(name, root string) {
-	jobs := goCoreConfig.CronJobs
+	jobs := easyConfig.CronJobs
 	if len(jobs) == 0 {
 		return
 	}
@@ -288,7 +277,7 @@ func createCronjob(name, root string) {
 
 func createJob(name, root string) {
 
-	jobs := goCoreConfig.Jobs
+	jobs := easyConfig.Jobs
 	if len(jobs) == 0 {
 		return
 	}

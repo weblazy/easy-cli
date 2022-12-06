@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Genertate(gormDb *gorm.DB, mysqlDb *conf.MysqlDb, config *conf.GoCore) *conf.GoCore {
+func Genertate(gormDb *gorm.DB, mysqlDb *conf.MysqlDb, config *conf.Config) *conf.Config {
 	tableNames := []string{}
 	for k1 := range mysqlDb.Tables {
 		tableNames = append(tableNames, mysqlDb.Tables[k1])
@@ -40,7 +40,7 @@ func Genertate(gormDb *gorm.DB, mysqlDb *conf.MysqlDb, config *conf.GoCore) *con
 		Name:   databaseName,
 		Models: models,
 	}
-	config.Config.CMysql = append(config.Config.CMysql, mysql)
+	config.MysqlList = append(config.MysqlList, mysql)
 	return config
 }
 

@@ -67,7 +67,7 @@ func addMysql(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	config, err := InitYaml(root, conf.GetGocoreConfig())
+	config, err := InitYaml(root, conf.GetConfig())
 	if err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func addMysql(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	printHint("Welcome to GoCore, Configuration file has been generated.")
+	printHint("Welcome to Easy, Configuration file has been generated.")
 	return nil
 }
 
@@ -103,6 +103,6 @@ func createMysqlYaml(c *cli.Context) error {
 	}
 	writer.Add(yamlByte)
 	writer.WriteToFile(mysqlPath)
-	printHint("Welcome to GoCore, Mysql Configuration file has been generated.")
+	printHint("Welcome to Easy, Mysql Configuration file has been generated.")
 	return nil
 }

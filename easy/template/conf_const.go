@@ -18,7 +18,7 @@ const (
 	buffer.WriteString(`"
 	ProjectVersion = "v1.0.0"
 	`)
-	for _, v1 := range goCoreConfig.Config.CMysql {
+	for _, v1 := range easyConfig.MysqlList {
 		buffer.WriteString(`
 		DB`)
 		buffer.WriteString(strings.Title(v1.Name))
@@ -27,7 +27,7 @@ const (
 		buffer.WriteString(`"
 	`)
 	}
-	for _, v1 := range goCoreConfig.Config.CRedis {
+	for _, v1 := range easyConfig.RedisList {
 		for k2 := range v1.Index {
 			buffer.WriteString(strings.Title(v1.Name) + strings.Title(k2))
 			buffer.WriteString(`Redis = "`)

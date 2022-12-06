@@ -9,7 +9,7 @@ import (
 )
 
 func createHttps(root, name string) {
-	for _, v := range goCoreConfig.HttpApis {
+	for _, v := range easyConfig.HttpApis {
 		homedir := root + "/https/" + v.Name
 		homePath := name + "/https/" + v.Name
 		createApi(root, name, homedir, homePath, v)

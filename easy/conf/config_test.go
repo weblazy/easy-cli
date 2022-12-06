@@ -7,8 +7,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func TestGetGocoreConfig(t *testing.T) {
-	c := GetGocoreConfig()
+func TestGetConfig(t *testing.T) {
+	c := GetConfig()
 	s, err := yaml.Marshal(&c)
 	if err != nil {
 		t.Error(err)

@@ -6,16 +6,14 @@ import (
 	"github.com/sunmi-OS/gocore/v2/utils/file"
 )
 
-type GoCore struct {
-	Service Service `yaml:"service"`
-	Config  Config  `yaml:"config"`
-	// HttpApiEnable bool      `yaml:"httpApiEnable"` // 是否开启HttpApi
-	// CronJobEnable bool      `yaml:"cronJobEnable"` // 是否开启 CronJob 默认不开启
-	// JobEnable     bool      `yaml:"jobEnable"`     // 是否开启 Job 任务
-	HttpApis []HttpApi `yaml:"httpApis"`
-	CronJobs []CronJob `yaml:"cronJobs"`
-	Jobs     []Job     `yaml:"jobs"`
-	Grpcs    []Grpc    `yaml:"grpcs"`
+type Config struct {
+	Service   Service   `yaml:"service"`
+	HttpApis  []HttpApi `yaml:"httpApis"`
+	CronJobs  []CronJob `yaml:"cronJobs"`
+	Jobs      []Job     `yaml:"jobs"`
+	Grpcs     []Grpc    `yaml:"grpcs"`
+	RedisList []Redis   `yaml:"RedisList"`
+	MysqlList []Mysql   `yaml:"mysqlList"`
 }
 
 type Service struct {
@@ -95,16 +93,9 @@ type App struct {
 	Comment string `yaml:"comment"`
 }
 
-type Config struct {
-	CRocketMQConfig bool    `yaml:"cRocketMQConfig"`
-	CMysql          []Mysql `yaml:"cMysql"`
-	CRedis          []Redis `yaml:"cRedis"`
-}
-
 type Mysql struct {
-	Name      string  `yaml:"name"` // Mysql名称，默认default
-	HotUpdate bool    `yaml:"hotUpdate"`
-	Models    []Model `yaml:"models"`
+	Name   string  `yaml:"name"` // Mysql名称，默认default
+	Models []Model `yaml:"models"`
 }
 
 type Model struct {
@@ -115,55 +106,50 @@ type Model struct {
 }
 
 type Redis struct {
-	Name      string         `yaml:"name"` // Redis名称，默认default
-	HotUpdate bool           `yaml:"hotUpdate"`
-	Index     map[string]int `yaml:"index"` // index和Key的映射关系
+	Name  string         `yaml:"name"`  // Redis名称，默认default
+	Index map[string]int `yaml:"index"` // index和Key的映射关系
 }
 
-func GetGocoreConfig() *GoCore {
+var projectName = "demo"
+var version = "v1.0.0"
 
-	projectName := "demo"
+func GetConfig() *Config {
+
 	// 获取当前目录名称
 	path := file.GetPath()
 	arr := strings.Split(path, "/")
 	if len(arr) > 1 {
 		projectName = arr[len(arr)-1]
 	}
-	return &GoCore{
+	return &Config{
 		Service: Service{
 			ProjectName: projectName,
-			Version:     "v1.0.0",
+			Version:     version,
 		},
-		Config: Config{
-			CRocketMQConfig: true,
-			CMysql: []Mysql{
-				{
-					Name: "app",
-					Models: []Model{
-						{
-							Name: "user",
-							Auto: false,
-							Fields: []string{
-								"column:id;primary_key;type:int AUTO_INCREMENT",
-								"column:name;type:varchar(100) NOT NULL;default:'';comment:'用户名';unique_index",
-							},
-							Comment: "用户表",
+		MysqlList: []Mysql{
+			{
+				Name: "app",
+				Models: []Model{
+					{
+						Name: "user",
+						Auto: false,
+						Fields: []string{
+							"column:id;primary_key;type:int AUTO_INCREMENT",
+							"column:name;type:varchar(100) NOT NULL;default:'';comment:'用户名';unique_index",
 						},
-					},
-				},
-			},
-			CRedis: []Redis{
-				{
-					Name: "default",
-					Index: map[string]int{
-						"db0": 0,
+						Comment: "用户表",
 					},
 				},
 			},
 		},
-		// HttpApiEnable: true,
-		// CronJobEnable: true,
-		// JobEnable:     true,
+		RedisList: []Redis{
+			{
+				Name: "default",
+				Index: map[string]int{
+					"db0": 0,
+				},
+			},
+		},
 		HttpApis: []HttpApi{HttpApi{
 			Host: "0.0.0.0",
 			Port: "80",

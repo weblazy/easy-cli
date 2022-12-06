@@ -49,7 +49,7 @@ func ui(c *cli.Context) error {
 			"https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js",
 			"https://unpkg.com/layui@2.6.8/dist/layui.js",
 		},
-		LoadingLabel: "GoCore Loading... ...",
+		LoadingLabel: "Easy Loading... ...",
 		Version:      "V1.0.0",
 	})
 

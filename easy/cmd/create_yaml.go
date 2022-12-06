@@ -35,16 +35,16 @@ func creatYaml(c *cli.Context) error {
 		root = "."
 	}
 	yamlPath := root + "/gocore.yaml"
-	_, err := InitYaml(yamlPath, conf.GetGocoreConfig())
+	_, err := InitYaml(yamlPath, conf.GetConfig())
 	if err != nil {
 		return err
 	}
-	printHint("Welcome to GoCore, Configuration file has been generated.")
+	printHint("Welcome to Easy, Configuration file has been generated.")
 	return nil
 }
 
 // InitYaml 初始化Yaml配置文件
-func InitYaml(yamlPath string, config *conf.GoCore) (*conf.GoCore, error) {
+func InitYaml(yamlPath string, config *conf.Config) (*conf.Config, error) {
 	if file.CheckFileIsExist(yamlPath) {
 		apiFile, err := os.Open(yamlPath)
 		if err == nil {
@@ -52,7 +52,7 @@ func InitYaml(yamlPath string, config *conf.GoCore) (*conf.GoCore, error) {
 			if err != nil {
 				panic(err)
 			}
-			cfg := conf.GoCore{}
+			cfg := conf.Config{}
 			err = yaml.Unmarshal(content, &cfg)
 			if err != nil {
 				panic(err)
@@ -66,7 +66,7 @@ func InitYaml(yamlPath string, config *conf.GoCore) (*conf.GoCore, error) {
 }
 
 // CreateYaml 创建Yaml文件
-func CreateYaml(yamlPath string, config *conf.GoCore) (*conf.GoCore, error) {
+func CreateYaml(yamlPath string, config *conf.Config) (*conf.Config, error) {
 	var writer = file.NewWriter()
 	yamlByte, err := yaml.Marshal(config)
 	if err != nil {

@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/urfave/cli/v2"
-	"github.com/weblazy/easy-cli/orm/conf"
+	"github.com/weblazy/easy-cli/easy/conf"
 	"github.com/weblazy/easy-cli/orm/utils"
 	"github.com/weblazy/easy-cli/orm/writer"
 	"gopkg.in/yaml.v2"

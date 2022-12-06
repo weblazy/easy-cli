@@ -11,7 +11,7 @@ import (
 )
 
 func createGrpcs(root, name string) {
-	for _, v := range goCoreConfig.Grpcs {
+	for _, v := range easyConfig.Grpcs {
 		homedir := root + "/grpcs/" + v.Name
 		homePath := name + "/grpcs/" + v.Name
 		createGrpcProtoHandler(root, name, homePath, homedir, v)

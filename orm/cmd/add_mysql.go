@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/weblazy/easy-cli/orm/conf"
+	"github.com/weblazy/easy-cli/easy/conf"
 	"github.com/weblazy/easy-cli/orm/file"
 	"github.com/weblazy/easy-cli/orm/generate"
 	"github.com/weblazy/easy-cli/orm/utils"

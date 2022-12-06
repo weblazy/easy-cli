@@ -16,7 +16,7 @@ type Navigate struct {
 func (h *Navigate) Render() app.UI {
 	h.initHeaderItem()
 	return app.Div().Class("layui-header").Body(
-		//app.Div().Class("layui-logo layui-hide-xs layui-bg-black").Text("GoCore"),
+		//app.Div().Class("layui-logo layui-hide-xs layui-bg-black").Text("Easy"),
 		app.Ul().Class("layui-nav  layui-layout-left").Body(
 			app.Range(h.hitem).Slice(func(i int) app.UI {
 				f := h.hitem[i]

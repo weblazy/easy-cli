@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/urfave/cli/v2"
-	"github.com/weblazy/easy-cli/orm/conf"
+	"github.com/weblazy/easy-cli/easy/conf"
 	"github.com/weblazy/easy-cli/orm/def"
 	"github.com/weblazy/easy-cli/orm/file"
 	"github.com/weblazy/easy-cli/orm/utils"
@@ -41,14 +41,14 @@ func creatCode(c *cli.Context) error {
 		}
 	} else {
 		utils.PrintHint("Run go mod init.")
-		resp, err := utils.Cmd("go", []string{"mod", "init", config.ProjectName})
+		resp, err := utils.Cmd("go", []string{"mod", "init", config.Service.ProjectName})
 		if err != nil {
 			fmt.Println(resp)
 			panic(err)
 		}
 	}
 
-	createModel(root, config.ProjectName, config)
+	createModel(root, config.Service.ProjectName, config.MysqlList)
 
 	utils.PrintHint("Run go mod tidy.")
 
@@ -75,11 +75,10 @@ func creatCode(c *cli.Context) error {
 	return nil
 }
 
-func createModel(root, name string, config *conf.Config) {
-	mysqlMap := config.MysqlList
+func createModel(root, projectName string, mysqlList []conf.Mysql) {
 
 	initDb := ""
-	for _, v1 := range mysqlMap {
+	for _, v1 := range mysqlList {
 		dir := root + "/model/" + v1.Name
 		initDb += `orm.NewDB(conf.DB` + strings.Title(v1.Name) + `)` + "\n" + v1.Name + `.SchemaMigrate()` + "\n"
 		err := file.MkdirIfNotExist(dir)
@@ -104,7 +103,7 @@ func createModel(root, name string, config *conf.Config) {
 
 		}
 
-		createSchema(v1.Name, tableStr, fileBuffer, config)
+		createSchema(v1.Name, tableStr, fileBuffer, projectName, mysqlList)
 		fileForceWriter(fileBuffer, dir+"/mysql_client.go")
 		utils.PrintHint(dir + " Has been created.")
 
@@ -133,7 +132,7 @@ func createField(field string) string {
 	return upFieldName + "  " + fieldType + " `json:\"" + fieldName + "\" gorm:\"" + field + "\"`\n"
 }
 
-func createSchema(dbName, tabels string, buffer *bytes.Buffer, config *conf.Config) {
+func createSchema(dbName, tabels string, buffer *bytes.Buffer, projectName string, mysqlList []conf.Mysql) {
 	buffer.WriteString(`
 package `)
 	buffer.WriteString(dbName)
@@ -146,11 +145,14 @@ import (
 	// buffer.WriteString(config.ProjectName)
 	buffer.WriteString(`
 	"gorm.io/gorm"
-	"github.com/weblazy/easy/utils/db/mysql"
 )
+var DB *gorm.DB
 
 func GetDB() *gorm.DB {
-	return mysql.GetDB("` + dbName + `")
+	// if 	viper.C.GetBool("base.debug") {
+	// 	return DB.Debug()
+	// }
+	return DB
 }
 
 func SchemaMigrate() {
@@ -177,7 +179,7 @@ import(
 	"time"
 	 "gorm.io/gorm"
 	 "github.com/shopspring/decimal"
-	 "github.com/weblazy/easy/utils/db/mysql"
+	 "github.com/weblazy/easy/utils/db/emysql"
 	 )
 var `)
 	buffer.WriteString(tableStruct)
@@ -215,7 +217,7 @@ func (t * `)
 		if db == nil {
 		db = GetDB()
 	}
-	return mysql.BulkInsert(db, t.TableName(), fields, params)
+	return emysql.BulkInsert(db, t.TableName(), fields, params)
 }`)
 
 	buffer.WriteString(`
@@ -223,7 +225,7 @@ func (t * `)
 		if db == nil {
 		db = GetDB()
 	}
-	return mysql.BulkSave(db, t.TableName(), fields, params)
+	return emysql.BulkSave(db, t.TableName(), fields, params)
 }`)
 
 	buffer.WriteString(`

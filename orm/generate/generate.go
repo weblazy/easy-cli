@@ -3,7 +3,7 @@ package generate
 import (
 	"strings"
 
-	"github.com/weblazy/easy-cli/orm/conf"
+	"github.com/weblazy/easy-cli/easy/conf"
 	"github.com/weblazy/easy-cli/orm/def"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

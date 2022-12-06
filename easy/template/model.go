@@ -17,7 +17,7 @@ import (
 	"fmt"
 
 	"`)
-	buffer.WriteString(goCoreConfig.Service.ProjectName)
+	buffer.WriteString(easyConfig.Service.ProjectName)
 	buffer.WriteString(`/conf"
 	"gorm.io/gorm"
 	"github.com/sunmi-OS/gocore/v2/db/orm"

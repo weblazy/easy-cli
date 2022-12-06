@@ -24,7 +24,7 @@ func Routes(router *gin.Engine) {
 
 	// 根目录健康检查
 	router.Any("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Welcome GoCore Service")
+		c.String(http.StatusOK, "Welcome Easy Service")
 	})
 	%s
 }
