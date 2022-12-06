@@ -10,6 +10,7 @@ import (
 	"github.com/weblazy/easy-cli/easy/conf"
 	"github.com/weblazy/easy-cli/easy/def"
 	"github.com/weblazy/easy-cli/easy/file"
+	"github.com/weblazy/easy-cli/orm/cmd"
 )
 
 var writer = file.NewWriter()
@@ -42,6 +43,7 @@ func CreateCode(root, name string, config *conf.Config) {
 	createReadme(root)
 	progressNext("Initialize the DB Model...")
 	createModel(root, name)
+	cmd.CreateModel(root, name, config.MysqlList)
 	progressNext("Initialize the Cronjob...")
 	createCronjob(name, root)
 	progressNext("Initialize the Job...")
@@ -185,22 +187,22 @@ func createModel(root, name string) {
 		tableStr := ""
 
 		for _, v2 := range tables {
-			tableName := v2.Name
+			// tableName := v2.Name
 			tableStruct := file.UnderlineToCamel(v2.Name)
 			tableStr += "_ = GetDB().Set(\"gorm:table_options\", \"CHARSET=utf8mb4 comment='" + v2.Comment + "' AUTO_INCREMENT=1;\").AutoMigrate(&" + tableStruct + "{})\n"
-			tabelPath := dir + "/" + tableName + ".go"
+			// tabelPath := dir + "/" + tableName + ".go"
 			fieldStr := ""
 			fields := v2.Fields
 			for _, v3 := range fields {
 				fieldStr += CreateField(v3)
 			}
-			FromModelTable(v1.Name, tableStruct, tableName, fieldStr, fileBuffer)
-			fileWriter(fileBuffer, tabelPath)
+			// FromModelTable(v1.Name, tableStruct, tableName, fieldStr, fileBuffer)
+			// fileWriter(fileBuffer, tabelPath)
 
 		}
 
-		FromModel(v1.Name, tableStr, fileBuffer)
-		fileForceWriter(fileBuffer, dir+"/mysql_client.go")
+		// FromModel(v1.Name, tableStr, fileBuffer)
+		// fileForceWriter(fileBuffer, dir+"/mysql_client.go")
 
 		buff := new(bytes.Buffer)
 		FromConfMysql(v1.Name, buff)

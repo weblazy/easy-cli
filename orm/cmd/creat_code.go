@@ -48,7 +48,7 @@ func creatCode(c *cli.Context) error {
 		}
 	}
 
-	createModel(root, config.Service.ProjectName, config.MysqlList)
+	CreateModel(root, config.Service.ProjectName, config.MysqlList)
 
 	utils.PrintHint("Run go mod tidy.")
 
@@ -75,7 +75,7 @@ func creatCode(c *cli.Context) error {
 	return nil
 }
 
-func createModel(root, projectName string, mysqlList []conf.Mysql) {
+func CreateModel(root, projectName string, mysqlList []conf.Mysql) {
 
 	initDb := ""
 	for _, v1 := range mysqlList {

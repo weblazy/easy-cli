@@ -12,7 +12,7 @@ type Config struct {
 	CronJobs  []CronJob `yaml:"cronJobs"`
 	Jobs      []Job     `yaml:"jobs"`
 	Grpcs     []Grpc    `yaml:"grpcs"`
-	RedisList []Redis   `yaml:"RedisList"`
+	RedisList []Redis   `yaml:"redisList"`
 	MysqlList []Mysql   `yaml:"mysqlList"`
 }
 
