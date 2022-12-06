@@ -49,10 +49,10 @@ var AddMysql = &cli.Command{
 func addMysql(c *cli.Context) error {
 	root := c.String("dir")
 	mysqlPath := "mysql.yaml"
-	gocorePath := "gocore.yaml"
+	gocorePath := "easy.yaml"
 	if root != "" {
 		mysqlPath = root + "/mysql.yaml"
-		gocorePath = root + "gocore.yaml"
+		gocorePath = root + "easy.yaml"
 	}
 	mysqlByte, err := os.ReadFile(mysqlPath)
 	if err != nil {

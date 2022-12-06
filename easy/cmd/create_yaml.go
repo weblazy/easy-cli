@@ -34,7 +34,7 @@ func creatYaml(c *cli.Context) error {
 	if root == "" {
 		root = "."
 	}
-	yamlPath := root + "/gocore.yaml"
+	yamlPath := root + "/easy.yaml"
 	_, err := InitYaml(yamlPath, conf.GetConfig())
 	if err != nil {
 		return err

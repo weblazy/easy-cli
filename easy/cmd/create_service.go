@@ -36,7 +36,7 @@ func creatService(c *cli.Context) error {
 	root := "."
 
 	if yamlPath == "" {
-		yamlPath = root + "/gocore.yaml"
+		yamlPath = root + "/easy.yaml"
 	}
 
 	if !file.CheckFileIsExist(yamlPath) {
