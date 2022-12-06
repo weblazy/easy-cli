@@ -7,6 +7,7 @@ import (
 	"github.com/urfave/cli/v2"
 	"github.com/weblazy/easy-cli/easy/cmd"
 	"github.com/weblazy/easy-cli/easy/conf"
+	ormcmd "github.com/weblazy/easy-cli/orm/cmd"
 )
 
 func main() {
@@ -24,6 +25,7 @@ func main() {
 		cmd.CreatYaml,
 		cmd.AddMysql,
 		cmd.Ui,
+		ormcmd.Mysql,
 	}
 	// 启动cli
 	if err := app.Run(os.Args); err != nil {

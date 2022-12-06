@@ -14,8 +14,8 @@ import (
 
 // AddMysql 添加已有mysql
 var AddMysql = &cli.Command{
-	Name:   "mysql",
-	Usage:  "mysql",
+	Name:   "mysql1",
+	Usage:  "mysql1",
 	Action: addMysql,
 	Subcommands: []*cli.Command{
 		{
