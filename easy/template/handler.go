@@ -38,7 +38,7 @@ import (
 	%s
 
 	"github.com/gin-gonic/gin"
-	"github.com/weblazy/easy/utils/http/http_server/service"
+	"github.com/weblazy/easy/http/http_server/service"
 )
 
 %s
@@ -88,7 +88,7 @@ package handler
 import (
 	"context"
      %s
-	"github.com/weblazy/easy/utils/code_err"
+	"github.com/weblazy/easy/code_err"
 )
 %s
 %s

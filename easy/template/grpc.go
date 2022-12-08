@@ -217,7 +217,7 @@ func GreateCmd(grpcName, homedir, pkgStr string, handlerStr, handlerRegister str
 
 		"github.com/urfave/cli/v2"
 
-		"github.com/weblazy/easy/utils/closes"
+		"github.com/weblazy/easy/closes"
 		"github.com/weblazy/gocore/viper"
 		"google.golang.org/grpc"
 		%s

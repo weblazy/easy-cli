@@ -179,7 +179,7 @@ import(
 	"time"
 	 "gorm.io/gorm"
 	 "github.com/shopspring/decimal"
-	 "github.com/weblazy/easy/utils/db/emysql"
+	 "github.com/weblazy/easy/db/emysql"
 	 )
 var `)
 	buffer.WriteString(tableStruct)

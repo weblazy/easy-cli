@@ -15,12 +15,12 @@ package config
 import (
 	%s
 
-	"github.com/weblazy/easy/utils/econfig/nacos"
+	"github.com/weblazy/easy/econfig/nacos"
 	"github.com/sunmi-OS/gocore/v2/db/orm"
 	"github.com/sunmi-OS/gocore/v2/db/redis"
-	"github.com/weblazy/easy/utils/elog"
+	"github.com/weblazy/easy/elog"
 	"github.com/sunmi-OS/gocore/v2/utils"
-	"github.com/weblazy/easy/utils/econfig/eviper"
+	"github.com/weblazy/easy/econfig/eviper"
 )
 
 type Config struct {

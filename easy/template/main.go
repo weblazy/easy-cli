@@ -14,7 +14,7 @@ import (
 	buffer.WriteString("\n\"" + projectName + `/cmd"`)
 	buffer.WriteString("\n\"" + projectName + `/common"
 
-	"github.com/weblazy/easy/utils/elog"
+	"github.com/weblazy/easy/elog"
 	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/urfave/cli/v2"
 )

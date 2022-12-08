@@ -15,7 +15,7 @@ package jobs
 import (
 	"%s/jobs/config"
 	"github.com/urfave/cli/v2"
-	"github.com/weblazy/easy/utils/closes"
+	"github.com/weblazy/easy/closes"
 )
 
 // Job cmd 任务相关

@@ -15,7 +15,7 @@ package %s
 
 import (
 	"%s/def"
-	"github.com/weblazy/easy/utils/code_err"
+	"github.com/weblazy/easy/code_err"
 
 )
 
@@ -32,7 +32,7 @@ func FromRpcLogic(handlerName, funcName, comment string, buffer *bytes.Buffer) {
 package %s_logic
 
 import (
-	"github.com/weblazy/easy/utils/code_err"
+	"github.com/weblazy/easy/code_err"
 
 )
 	type %sCtx struct {

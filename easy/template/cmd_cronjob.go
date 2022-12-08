@@ -14,7 +14,7 @@ import (
 	buffer.WriteString(name)
 	buffer.WriteString(`/cronjobs/config"
 	"github.com/robfig/cron/v3"
-	"github.com/weblazy/easy/utils/closes"
+	"github.com/weblazy/easy/closes"
 	"github.com/urfave/cli/v2"
 )
 

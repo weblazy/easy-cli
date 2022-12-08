@@ -121,7 +121,7 @@ func createConf(root string, name string) {
 	FromConfConst(name, fileBuffer)
 	fileForceWriter(fileBuffer, root+"/conf/const.go")
 	fileBuffer.WriteString(fmt.Sprintf(`package common
-import "github.com/weblazy/easy/utils/econfig/eviper"
+import "github.com/weblazy/easy/econfig/eviper"
 var (
 	Viper *eviper.Viper
  	ProjectName    = "%s"
@@ -183,23 +183,23 @@ func createModel(root, name string) {
 		if err != nil {
 			panic(err)
 		}
-		tables := v1.Models
-		tableStr := ""
+		// tables := v1.Models
+		// tableStr := ""
 
-		for _, v2 := range tables {
-			// tableName := v2.Name
-			tableStruct := file.UnderlineToCamel(v2.Name)
-			tableStr += "_ = GetDB().Set(\"gorm:table_options\", \"CHARSET=utf8mb4 comment='" + v2.Comment + "' AUTO_INCREMENT=1;\").AutoMigrate(&" + tableStruct + "{})\n"
-			// tabelPath := dir + "/" + tableName + ".go"
-			fieldStr := ""
-			fields := v2.Fields
-			for _, v3 := range fields {
-				fieldStr += CreateField(v3)
-			}
-			// FromModelTable(v1.Name, tableStruct, tableName, fieldStr, fileBuffer)
-			// fileWriter(fileBuffer, tabelPath)
+		// for _, v2 := range tables {
+		// tableName := v2.Name
+		// tableStruct := file.UnderlineToCamel(v2.Name)
+		// tableStr += "_ = GetDB().Set(\"gorm:table_options\", \"CHARSET=utf8mb4 comment='" + v2.Comment + "' AUTO_INCREMENT=1;\").AutoMigrate(&" + tableStruct + "{})\n"
+		// tabelPath := dir + "/" + tableName + ".go"
+		// fieldStr := ""
+		// fields := v2.Fields
+		// for _, v3 := range fields {
+		// fieldStr += CreateField(v3)
+		// }
+		// FromModelTable(v1.Name, tableStruct, tableName, fieldStr, fileBuffer)
+		// fileWriter(fileBuffer, tabelPath)
 
-		}
+		// }
 
 		// FromModel(v1.Name, tableStr, fileBuffer)
 		// fileForceWriter(fileBuffer, dir+"/mysql_client.go")

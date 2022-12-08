@@ -18,12 +18,12 @@ import (
 
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
-	"github.com/weblazy/easy/utils/econfig/eviper"
+	"github.com/weblazy/easy/econfig/eviper"
 	"github.com/sunmi-OS/gocore/v2/utils"
-	"github.com/weblazy/easy/utils/closes"
+	"github.com/weblazy/easy/closes"
 	"github.com/urfave/cli/v2"
-	"github.com/weblazy/easy/utils/http/http_server"
-	"github.com/weblazy/easy/utils/http/http_server/http_server_config"
+	"github.com/weblazy/easy/http/http_server"
+	"github.com/weblazy/easy/http/http_server/http_server_config"
 )
 
 var Cmd = &cli.Command{

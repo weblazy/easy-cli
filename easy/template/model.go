@@ -21,7 +21,7 @@ import (
 	buffer.WriteString(`/conf"
 	"gorm.io/gorm"
 	"github.com/sunmi-OS/gocore/v2/db/orm"
-	"github.com/weblazy/easy/utils/econfig/eviper"
+	"github.com/weblazy/easy/econfig/eviper"
 	"github.com/sunmi-OS/gocore/v2/utils"
 )
 var DB *gorm.DB
