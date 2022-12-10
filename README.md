@@ -22,3 +22,68 @@ Validation: 通过Protobuf统一定义校验规则，并同时适用于HTTP/gRPC
 - grpc mock
 - 监控面板
 - 告警
+# 目录结构
+.
+├── Dockerfile
+├── README.md
+├── common
+│   └── common.go
+├── conf
+│   ├── base.go
+│   ├── const.go
+│   └── local.go
+├── cronjobs
+│   ├── config
+│   │   └── config.go
+│   ├── cronjobs.go
+│   └── handler
+│       └── sync_user.go
+├── easy.yaml
+├── go.mod
+├── go.sum
+├── grpcs
+│   └── order_rpc
+│       ├── config
+│       │   └── config.go
+│       ├── handler
+│       │   └── user.go
+│       ├── logic
+│       │   └── user_logic
+│       │       └── get_user_info.go
+│       ├── order_rpc.go
+│       └── proto
+│           └── user
+│               ├── user.pb.go
+│               ├── user.proto
+│               └── user_grpc.pb.go
+├── https
+│   └── order_http
+│       ├── config
+│       │   └── config.go
+│       ├── def
+│       │   └── def.go
+│       ├── errcode
+│       │   └── errcode.go
+│       ├── handler
+│       │   └── user.go
+│       ├── logic
+│       │   └── user
+│       │       └── get_user_info.go
+│       ├── order_http.go
+│       └── routes
+│           ├── routes.go
+│           └── user_interceptor.go
+├── jobs
+│   ├── config
+│   │   └── config.go
+│   ├── handler
+│   │   └── init_user.go
+│   └── jobs.go
+├── main.go
+├── model
+│   ├── app
+│   │   ├── mysql_client.go
+│   │   └── user.go
+├── orm.yaml
+├── pkg
+└── postman.json
