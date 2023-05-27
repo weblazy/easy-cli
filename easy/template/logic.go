@@ -16,7 +16,7 @@ package %s
 import (
 	"%s/def"
 	"github.com/weblazy/easy/code_err"
-
+	"github.com/weblazy/easy/http/http_server/service"
 )
 
     // %s
@@ -36,7 +36,7 @@ import (
 
 )
 	type %sCtx struct {
-		*code_err.SvcContext
+		*code_err.Log
 		Req *user.%sRequest
 		Res *user.%sResponse
 	}

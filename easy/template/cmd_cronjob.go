@@ -3,17 +3,20 @@
 // DO NOT EDIT!
 package template
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
 func FromCmdCronJob(name, cronjobs string, buffer *bytes.Buffer) {
 	buffer.WriteString(`
 package cronjobs
 
 import (
-	"`)
-	buffer.WriteString(name)
-	buffer.WriteString(`/cronjobs/config"
-	"github.com/robfig/cron/v3"
+	`)
+	buffer.WriteString(fmt.Sprintf("\"%s/cronjobs/config\"\n",name))
+	buffer.WriteString(fmt.Sprintf("\"%s/cronjobs/handler\"\n",name)+
+	`"github.com/robfig/cron/v3"
 	"github.com/weblazy/easy/closes"
 	"github.com/urfave/cli/v2"
 )

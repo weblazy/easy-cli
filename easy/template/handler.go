@@ -15,7 +15,7 @@ func FromHttpHandler(httpName,homePath, homedir, handlerName string, comments []
 	pkgStr := ""
 	funcStr := ""
 	for k1, v1 := range functions {
-		pkgStr += fmt.Sprintf(`"%s/logic/%s"`, homePath, v1) + "\n"
+		pkgStr += fmt.Sprintf(`"%s/logic/%s"`, homePath, handlerName) + "\n"
 		funcStr += fmt.Sprintf(`    
 	// %s
 	func %s(g *gin.Context) {
@@ -69,7 +69,7 @@ func FromRpcHandler(homePath, handlerName string, functions []conf.Handle, buffe
 	// %s  
 	func (h *%sService) %s(ctx context.Context, req *%s.%sRequest) (*%s.%sResponse, error) {
 		svcCtx := &%s_logic.%sCtx{
-			SvcContext: code_err.NewSvcContext(ctx),
+			Log: code_err.NewLog(ctx),
 			Req:      req,
 			Res: new(%s.%sResponse),
 		}

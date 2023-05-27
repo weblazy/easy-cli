@@ -14,6 +14,7 @@ package jobs
 
 import (
 	"%s/jobs/config"
+    "%s/jobs/handler"
 	"github.com/urfave/cli/v2"
 	"github.com/weblazy/easy/closes"
 )
@@ -29,5 +30,5 @@ var Cmd = &cli.Command{
 }
 
 %s
-`, name, jobCmd, jobFunctions))
+`, name,name, jobCmd, jobFunctions))
 }

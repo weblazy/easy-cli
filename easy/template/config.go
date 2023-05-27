@@ -14,13 +14,19 @@ package config
 
 import (
 	%s
-
+    "os"
+	"%s/common"
 	"github.com/weblazy/easy/econfig/nacos"
-	"github.com/sunmi-OS/gocore/v2/db/orm"
-	"github.com/sunmi-OS/gocore/v2/db/redis"
 	"github.com/weblazy/easy/elog"
 	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/weblazy/easy/econfig/eviper"
+	"github.com/weblazy/easy/econfig"
+	"github.com/go-redis/redis/v8"
+	"github.com/weblazy/easy/db/eredis"
+	"github.com/weblazy/easy/db/emysql"
+	"github.com/weblazy/easy/http/http_server/http_server_config"
+	"github.com/weblazy/easy/db/emysql/emysql_config"
+	"github.com/weblazy/easy/db/eredis/eredis_config"
 )
 
 type Config struct {
@@ -71,6 +77,6 @@ func initMysql() {
 // initRedis 初始化redis服务
 func initRedis() {
 	%s
-}`, pkgs, configStr, configVar, InitMysql, InitRedis))
+}`, pkgs,name, configStr, configVar, InitMysql, InitRedis))
 
 }

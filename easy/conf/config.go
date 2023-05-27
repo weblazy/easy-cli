@@ -153,7 +153,7 @@ func GetConfig() *Config {
 		HttpApis: []HttpApi{HttpApi{
 			Host: "0.0.0.0",
 			Port: "80",
-			Name: "order",
+			Name: "orderapi",
 			Params: map[string][]Param{
 				"User": {
 					{
@@ -224,7 +224,7 @@ func GetConfig() *Config {
 		Grpcs: []Grpc{Grpc{
 			Host: "0.0.0.0",
 			Port: "80",
-			Name: "order",
+			Name: "orderrpc",
 			CommonHeaders: []Header{Header{
 				Key:   "Content-Type",
 				Value: "application/json",

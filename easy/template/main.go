@@ -3,17 +3,20 @@
 // DO NOT EDIT!
 package template
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
-func FromMain(projectName string, cmdList []string, buffer *bytes.Buffer) {
+func FromMain(projectName string, cmdList []string,pkgList string, buffer *bytes.Buffer) {
 	buffer.WriteString(`
 package main
 
 import (
 	"os"`)
-	buffer.WriteString("\n\"" + projectName + `/cmd"`)
-	buffer.WriteString("\n\"" + projectName + `/common"
-
+	buffer.WriteString(fmt.Sprintf("%s\n\"%s/common\"",pkgList,projectName))
+	buffer.WriteString(
+	`
 	"github.com/weblazy/easy/elog"
 	"github.com/sunmi-OS/gocore/v2/utils"
 	"github.com/urfave/cli/v2"
@@ -23,12 +26,12 @@ func main() {
 	// 打印Banner
 	utils.PrintBanner(common.ProjectName)
 	// 配置cli参数
-	app := cli.NewApp()
-	app.Name = common.ProjectName
-	app.Version = common.ProjectVersion
+	cliApp := cli.NewApp()
+	cliApp.Name = common.ProjectName
+	cliApp.Version = common.ProjectVersion
 
 	// 指定命令运行的函数
-	app.Commands = []*cli.Command{
+	cliApp.Commands = []*cli.Command{
         `)
 	for _, cmd := range cmdList {
 		buffer.WriteString(cmd)
@@ -37,7 +40,7 @@ func main() {
 	}
 
 	// 启动cli
-	if err := app.Run(os.Args); err != nil {
+	if err := cliApp.Run(os.Args); err != nil {
 		elog.ErrorCtx(context.Background(), "Failed to start application", elog.FieldError(err))
 	}
 }`)

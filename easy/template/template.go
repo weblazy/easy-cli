@@ -101,19 +101,24 @@ func CreateField(field string) string {
 
 func createMain(root, name string) {
 	var cmdList []string
+	pkgList := ""
 	for _, v := range easyConfig.HttpApis {
+		pkgList += fmt.Sprintf("\n\"%s/https/%s\"", name, v.Name)
 		cmdList = append(cmdList, v.Name+".Cmd,")
 	}
 	for _, v := range easyConfig.Grpcs {
+		pkgList += fmt.Sprintf("\n\"%s/grpcs/%s\"", name, v.Name)
 		cmdList = append(cmdList, v.Name+".Cmd,")
 	}
 	if len(easyConfig.CronJobs) > 0 {
+		pkgList += fmt.Sprintf("\n\"%s/cronjobs\"", name)
 		cmdList = append(cmdList, "cronjobs.Cmd,")
 	}
 	if len(easyConfig.Jobs) > 0 {
+		pkgList += fmt.Sprintf("\n\"%s/jobs\"", name)
 		cmdList = append(cmdList, "jobs.Cmd,")
 	}
-	FromMain(name, cmdList, fileBuffer)
+	FromMain(name, cmdList, pkgList, fileBuffer)
 	fileForceWriter(fileBuffer, root+"/main.go")
 }
 

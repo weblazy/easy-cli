@@ -90,8 +90,15 @@ func creatService(c *cli.Context) error {
 		fmt.Println(resp)
 		panic(err)
 	}
-	printHint("Welcome to Easy, the project has been initialized.")
 
+	printHint("Run go mod tidy.")
+	resp, err = utils.Cmd("go", []string{"mod", "tidy"})
+	if err != nil {
+		fmt.Println(resp)
+		panic(err)
+	}
+
+	printHint("Welcome to Easy, the project has been initialized.")
 	return nil
 }
 

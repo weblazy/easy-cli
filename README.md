@@ -23,6 +23,7 @@ Validation: 通过Protobuf统一定义校验规则，并同时适用于HTTP/gRPC
 - 监控面板
 - 告警
 # 目录结构
+```
 .
 ├── Dockerfile
 ├── README.md
@@ -87,3 +88,19 @@ Validation: 通过Protobuf统一定义校验规则，并同时适用于HTTP/gRPC
 ├── orm.yaml
 ├── pkg
 └── postman.json
+```
+# 依赖
+```
+go install golang.org/x/tools/cmd/goimports@latest
+brew install protobuf protoc-gen-go protoc-gen-go-grpc
+```
+# 执行命令
+创建demo项目
+```
+cd easy-cli/easy
+go build .
+mkdir demo
+cd demo 
+easy yaml create
+easy service create
+```

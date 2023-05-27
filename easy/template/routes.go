@@ -36,7 +36,7 @@ func CreateInterceptor(homedir, handlerName string) string {
 	return fmt.Sprintf(`package routes
 
 import (
-	"%s/http_config"
+	"%s/config"
 
 	"github.com/gin-gonic/gin"
 )

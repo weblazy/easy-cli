@@ -55,7 +55,7 @@ func createApi(root, name, homedir, homePath string, httpApi conf.HttpApi) {
 	}
 
 	routesStr := ""
-	routesPkg := ""
+	routesPkg := fmt.Sprintf("\"%s/handler\"\n", homePath)
 	//handlers := make([]string, 0)
 	err = file.MkdirIfNotExist(homedir + "/routes")
 	if err != nil {
@@ -65,7 +65,6 @@ func createApi(root, name, homedir, homePath string, httpApi conf.HttpApi) {
 		handlerName := v1.ModuleName
 		routesStr += "\n" + handlerName + "Group:=router.Group(\"" + v1.Prefix + "\")\n"
 		routesStr += fmt.Sprintf("\n%sInterceptor(%sGroup)\n", handlerName, handlerName)
-		routesPkg += fmt.Sprintf("\"%s/handler/%s\"\n", homePath, handlerName)
 		// handlerPath := handlerDir + file.CamelToUnderline(handlerName) + ".go"
 		routes := v1.Handle
 		// FromDomain(fileBuffer)
@@ -117,7 +116,6 @@ func createApi(root, name, homedir, homePath string, httpApi conf.HttpApi) {
 		fileBuffer.WriteString(CreateInterceptor(homePath, handlerName))
 		fileForceWriter(fileBuffer, homedir+"/routes/"+handlerName+"_interceptor.go")
 	}
-	routesPkg += fmt.Sprintf("\"%s/config\"\n", homePath)
 	FromRoutes(routesPkg, routesStr, fileBuffer)
 
 	fileForceWriter(fileBuffer, homedir+"/routes/routes.go")

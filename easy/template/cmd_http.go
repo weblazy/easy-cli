@@ -14,7 +14,7 @@ package %s
 
 import (
 	"%s/routes"
-	conf "%s/config"
+	"%s/config"
 
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
