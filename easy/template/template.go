@@ -127,7 +127,7 @@ func createConf(root string, name string) {
 	// fileForceWriter(fileBuffer, root+"/conf/const.go")
 	redisList := ""
 	for _, v1 := range easyConfig.RedisList {
-		redisList += fmt.Sprintf("%sRedis = \"%s\"", file.UnderlineToCamel(v1.Name), v1.Name)
+		redisList += fmt.Sprintf("%sRedis = \"%sRedis\"", file.UnderlineToCamel(v1.Name), file.UnderlineToCamel(v1.Name))
 	}
 	fileBuffer.WriteString(fmt.Sprintf(`package common
 import "github.com/weblazy/easy/econfig/eviper"

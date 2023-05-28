@@ -7,6 +7,8 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
+
+	"github.com/weblazy/easy-cli/easy/file"
 )
 
 func FromModel(dbName, tabels string, buffer *bytes.Buffer) {
@@ -26,14 +28,14 @@ import (
 	"github.com/weblazy/easy/econfig/eviper"
 	"github.com/sunmi-OS/gocore/v2/utils"
 )
-const %sMysql = "%s"
+const %sMysql = "%sMysql"
 
 func GetDB() *gorm.DB {
 	return emysql.GetMysql(%sMysql).DB
 }
 
 func SchemaMigrate() {
-	fmt.Println("开始初始化`, strings.Title(dbName), dbName, strings.Title(dbName)))
+	fmt.Println("开始初始化`, file.UnderlineToCamel(dbName), file.UnderlineToCamel(dbName), file.UnderlineToCamel(dbName)))
 	buffer.WriteString(dbName)
 	buffer.WriteString(`数据库")
 	//自动建表，数据迁移
