@@ -5,6 +5,8 @@ package template
 
 import (
 	"bytes"
+	"fmt"
+	"strings"
 )
 
 func FromModel(dbName, tabels string, buffer *bytes.Buffer) {
@@ -18,25 +20,20 @@ import (
 
 	"`)
 	buffer.WriteString(easyConfig.Service.ProjectName)
-	buffer.WriteString(`/conf"
+	buffer.WriteString(fmt.Sprintf(`/conf"
 	"gorm.io/gorm"
 	"github.com/sunmi-OS/gocore/v2/db/orm"
 	"github.com/weblazy/easy/econfig/eviper"
 	"github.com/sunmi-OS/gocore/v2/utils"
 )
-var DB *gorm.DB
+const %sMysql = "%s"
 
 func GetDB() *gorm.DB {
-	`)
-	buffer.WriteString(`
-	if 	viper.C.GetBool("base.debug") {
-		return DB.Debug()
-	}
-	return DB
+	return emysql.GetMysql(%sMysql).DB
 }
 
 func SchemaMigrate() {
-	fmt.Println("开始初始化`)
+	fmt.Println("开始初始化`, strings.Title(dbName), dbName, strings.Title(dbName)))
 	buffer.WriteString(dbName)
 	buffer.WriteString(`数据库")
 	//自动建表，数据迁移

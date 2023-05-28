@@ -154,7 +154,7 @@ func GetDB() *gorm.DB {
 }
 
 func SchemaMigrate() {
-	fmt.Println("开始初始化`, strings.Title(dbName), strings.Title(dbName), dbName))
+	fmt.Println("开始初始化`, strings.Title(dbName), dbName, strings.Title(dbName)))
 	buffer.WriteString(dbName)
 	buffer.WriteString(`数据库")
 	//自动建表，数据迁移
