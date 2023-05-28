@@ -123,16 +123,20 @@ func createMain(root, name string) {
 }
 
 func createConf(root string, name string) {
-	FromConfConst(name, fileBuffer)
-	fileForceWriter(fileBuffer, root+"/conf/const.go")
+	// FromConfConst(name, fileBuffer)
+	// fileForceWriter(fileBuffer, root+"/conf/const.go")
+	redisList := ""
+	for _, v1 := range easyConfig.RedisList {
+		redisList += fmt.Sprintf("%sRedis = \"%s\"", file.UnderlineToCamel(v1.Name), v1.Name)
+	}
 	fileBuffer.WriteString(fmt.Sprintf(`package common
 import "github.com/weblazy/easy/econfig/eviper"
 var (
-	Viper *eviper.Viper
  	ProjectName    = "%s"
  	ProjectVersion = "%s"
+	%s
 )
-`, easyConfig.Service.ProjectName, easyConfig.Service.Version))
+`, easyConfig.Service.ProjectName, easyConfig.Service.Version, redisList))
 	fileForceWriter(fileBuffer, root+"/common/common.go")
 }
 
@@ -232,13 +236,13 @@ prefix = ""
 
 	}
 
-	FromConfLocal("LocalConfig", localConf, fileBuffer)
-	fileWriter(fileBuffer, root+"/conf/local.go")
+	// FromConfLocal("LocalConfig", localConf, fileBuffer)
+	// fileWriter(fileBuffer, root+"/conf/local.go")
 	// FromConfigInit(name, pkgs, InitDB, initRedis, fileBuffer)
 	// fileForceWriter(fileBuffer, root+"/cmd/init.go")
 
-	FromConfBase(baseConf, fileBuffer)
-	fileForceWriter(fileBuffer, root+"/conf/base.go")
+	// FromConfBase(baseConf, fileBuffer)
+	// fileForceWriter(fileBuffer, root+"/conf/base.go")
 }
 
 func createCronjob(name, root string) {
@@ -363,7 +367,7 @@ func mkdir(root string) {
 		"/model",
 		// "/app/errcode",
 		// "/app/routes",
-		"/conf",
+		// "/conf",
 		"/pkg",
 	}
 	for _, dir := range dirList {

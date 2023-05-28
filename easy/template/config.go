@@ -34,15 +34,11 @@ import (
 type Config struct {
 	BaseConfig       struct{}
 	%s
-	AppMysql         *emysql_config.Config
-	AppRedis         *eredis_config.Config
 }
 
 var Conf = Config{
 	BaseConfig:       struct{}{},
 	%s
-	AppMysql:         emysql_config.DefaultConfig(),
-	AppRedis:         eredis_config.DefaultConfig(),
 }
 
 var LocalConfig = ""
