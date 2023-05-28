@@ -143,20 +143,18 @@ import (
 
 	`)
 	// buffer.WriteString(config.ProjectName)
-	buffer.WriteString(`
+	buffer.WriteString(fmt.Sprintf(`
+	"github.com/weblazy/easy/db/emysql"
 	"gorm.io/gorm"
 )
-var DB *gorm.DB
+const %sMysql = "%s"
 
 func GetDB() *gorm.DB {
-	// if 	viper.C.GetBool("base.debug") {
-	// 	return DB.Debug()
-	// }
-	return DB
+	return emysql.GetMysql(%sMysql).DB
 }
 
 func SchemaMigrate() {
-	fmt.Println("开始初始化`)
+	fmt.Println("开始初始化`, strings.Title(dbName), strings.Title(dbName), dbName))
 	buffer.WriteString(dbName)
 	buffer.WriteString(`数据库")
 	//自动建表，数据迁移

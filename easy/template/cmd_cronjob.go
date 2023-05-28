@@ -37,7 +37,7 @@ var Cmd = &cli.Command{
 func Run(c *cli.Context) error {
 	defer closes.Close()
 	// 初始化必要内容
-	config.InitConf()
+	econfig.InitGlobalViper(&config.Conf, config.LocalConfig)
 	cronJob := cron.New()
 
     `)

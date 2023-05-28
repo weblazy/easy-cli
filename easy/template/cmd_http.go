@@ -41,7 +41,7 @@ var Cmd = &cli.Command{
 
 func Run(c *cli.Context) error {
 	defer closes.Close()
-	config.InitConf()
+	econfig.InitGlobalViper(&config.Conf, config.LocalConfig)
 
 	s, err := http_server.NewHttpServer(config.Conf.HttpServerConfig)
 	if err != nil {

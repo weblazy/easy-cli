@@ -325,7 +325,7 @@ func createJob(name, root string) {
 func ` + v1.Name + `(c *cli.Context) error {
 	defer closes.Close()
 	// 初始化必要内容
-	config.InitConf()
+	econfig.InitGlobalViper(&config.Conf, config.LocalConfig)
 	handler.` + v1.Name + `()
 	return nil
 }

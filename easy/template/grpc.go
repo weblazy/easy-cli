@@ -239,7 +239,7 @@ func GreateCmd(grpcName, homedir, pkgStr string, handlerStr, handlerRegister str
 
 func Run(c *cli.Context) error {
 	defer closes.Close()
-	config.InitConf()
+	econfig.InitGlobalViper(&config.Conf, config.LocalConfig)
 	s := grpc_server.NewGrpcServer(config.Conf.GrpcServerConfig)
 	%s
     %s

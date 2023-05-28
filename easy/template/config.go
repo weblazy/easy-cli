@@ -8,6 +8,8 @@ import (
 	"fmt"
 )
 
+
+
 func FromConfigInit(name, pkgs, configStr, configVar, InitMysql, InitRedis string, buffer *bytes.Buffer) {
 	buffer.WriteString(fmt.Sprintf(`
 package config
@@ -43,40 +45,8 @@ var Conf = Config{
 	AppRedis:         eredis_config.DefaultConfig(),
 }
 
-var Redis *eredis.RedisClient
-
 var LocalConfig = ""
 			
-func InitConf() {
-	switch os.Getenv(econfig.EasyConfigType) {
-	case econfig.LocalType:
-		common.Viper = eviper.NewViperFromString(LocalConfig)
-	case econfig.FielType:
-		common.Viper = eviper.NewViperFromFile("", os.Getenv(econfig.EasyConfigFile))
-	case econfig.NacosType:
-		nacos.NewNacosEnv()
-		vt := nacos.GetViper()
-		vt.SetDataIds(os.Getenv("ServiceName"), os.Getenv("DataId"))
-		// 注册配置更新回调
-		vt.NacosToViper()
-		common.Viper = vt.Viper
-	default:
-		common.Viper = eviper.NewViperFromString(LocalConfig)
-	}
-	common.Viper.Unmarshal(&Conf)
-
-	initMysql()
-	initRedis()
-}
-
-// initMysql 初始化mysql服务
-func initMysql() {
-	%s
-}
-
-// initRedis 初始化redis服务
-func initRedis() {
-	%s
-}`, pkgs,name, configStr, configVar, InitMysql, InitRedis))
+`, pkgs,name, configStr, configVar))
 
 }
