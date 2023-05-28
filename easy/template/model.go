@@ -6,7 +6,6 @@ package template
 import (
 	"bytes"
 	"fmt"
-	"strings"
 
 	"github.com/weblazy/easy-cli/easy/file"
 )
