@@ -147,7 +147,7 @@ import (
 	"github.com/weblazy/easy/db/emysql"
 	"gorm.io/gorm"
 )
-const %sMysql = "%s"
+const %sMysql = "%sMysql"
 
 func GetDB() *gorm.DB {
 	return emysql.GetMysql(%sMysql).DB
