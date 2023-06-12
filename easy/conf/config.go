@@ -135,7 +135,7 @@ func GetConfig() *Config {
 						Auto: false,
 						Fields: []string{
 							"column:id;primary_key;type:int AUTO_INCREMENT",
-							"column:name;type:varchar(100) NOT NULL;default:'';comment:'用户名';unique_index",
+							"column:name;type:varchar(100) NOT NULL;default:'';comment:'用户名';uniqueIndex:name_idx,priority:1",
 						},
 						Comment: "用户表",
 					},
