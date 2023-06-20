@@ -250,6 +250,12 @@ func (t * `)
 }`)
 
 	buffer.WriteString(`
+	func (t * ` + tableStruct + `) GetFirst(order string, where string, args ...interface{})(*` + tableStruct + `, error) {
+	var obj ` + tableStruct + `
+	return &obj, GetDB().Where(where, args...).Order(order).Take(&obj).Error
+}`)
+
+	buffer.WriteString(`
 	func (* ` + tableStruct + `) GetList(where string, args ...interface{}) ([]*` + tableStruct + `, error) {
 	var list []*` + tableStruct + `
 	return list, GetDB().Where(where, args...).Find(&list).Error
