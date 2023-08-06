@@ -268,6 +268,11 @@ func (t * `)
 }`)
 
 	buffer.WriteString(`
+	func (t * ` + tableStruct + `) GetListOrder(order string, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
+	var list []*` + tableStruct + `
+	return list,GetDB().Where(where, args...).Order(order).Find(&list).Error}`)
+
+	buffer.WriteString(`
 	func (t * ` + tableStruct + `) GetListOrderLimit(order string, limit int, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
 	var list []*` + tableStruct + `
 	if limit == 0 || limit > 10000 {
