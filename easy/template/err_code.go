@@ -10,12 +10,12 @@ func FromErrCode(buffer *bytes.Buffer) {
 package errcode
 
 import (
-	"github.com/sunmi-OS/gocore/v2/api/ecode"
+	"github.com/weblazy/easy/code_err"
 	"gorm.io/gorm"
 )
 
 var (
-	ErrorNotFound = ecode.New(50001, gorm.ErrRecordNotFound)
+	ErrorNotFound = code_err.NewCodeErr(50001, gorm.ErrRecordNotFound.Error())
 )`)
 
 }
