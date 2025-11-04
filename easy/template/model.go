@@ -29,8 +29,8 @@ import (
 )
 const %sMysql = "%sMysql"
 
-func GetDB() *gorm.DB {
-	return emysql.GetMysql(%sMysql).DB
+func GetDB(ctx context.Context) *gorm.DB {
+	return emysql.GetMysql(ctx, %sMysql)
 }
 
 func SchemaMigrate() {
