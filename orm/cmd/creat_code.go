@@ -68,6 +68,7 @@ func creatCode(c *cli.Context) error {
 	utils.PrintHint("goimports -l -w .")
 	resp, err = utils.Cmd("goimports", []string{"-l", "-w", "."})
 	if err != nil {
+		fmt.Println(resp)
 		panic(err)
 	}
 	utils.PrintHint("Welcome to orm, the project has been initialized.")
@@ -91,7 +92,7 @@ func CreateModel(root, projectName string, mysqlList []conf.Mysql) {
 		for _, v2 := range tables {
 			tableName := v2.Name
 			tableStruct := file.UnderlineToCamel(v2.Name)
-			tableStr += "_ =  GetDB().Set(\"gorm:table_options\", \"CHARSET=utf8mb4 comment='" + v2.Comment + "' AUTO_INCREMENT=1;\").AutoMigrate(&" + tableStruct + "{})\n"
+			tableStr += "_ =  GetDB(ctx).Set(\"gorm:table_options\", \"CHARSET=utf8mb4 comment='" + v2.Comment + "' AUTO_INCREMENT=1;\").AutoMigrate(&" + tableStruct + "{})\n"
 			tabelPath := dir + "/" + tableName + ".go"
 			fieldStr := ""
 			fields := v2.Fields
@@ -140,6 +141,7 @@ package `)
 
 import (
 	"fmt"
+	"context"
 
 	`)
 	// buffer.WriteString(config.ProjectName)
@@ -149,8 +151,8 @@ import (
 )
 const %sMysql = "%sMysql"
 
-func GetDB() *gorm.DB {
-	return emysql.GetMysql(%sMysql).DB
+func GetDB(ctx context.Context) *gorm.DB {
+	return emysql.GetMysql(ctx, %sMysql)
 }
 
 func SchemaMigrate() {
@@ -158,6 +160,7 @@ func SchemaMigrate() {
 	buffer.WriteString(dbName)
 	buffer.WriteString(`数据库")
 	//自动建表，数据迁移
+	ctx := context.Background()
     `)
 	buffer.WriteString(tabels)
 	buffer.WriteString(`
@@ -203,121 +206,111 @@ func (t * `)
 
 `)
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) Insert(db *gorm.DB, data *` + tableStruct + `) error {
-		if db == nil {
-		db = GetDB()
-	}
+	func (t * ` + tableStruct + `) Insert(ctx context.Context, data *` + tableStruct + `) error {
+		db := GetDB(ctx)
 	return db.Create(data).Error
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) BulkInsert(db *gorm.DB, fields []string, params []map[string]interface{}) error {
-		if db == nil {
-		db = GetDB()
-	}
+	func (t * ` + tableStruct + `) BulkInsert(ctx context.Context, fields []string, params []map[string]interface{}) error {
+		db := GetDB(ctx)
 	return emysql.BulkInsert(db, t.TableName(), fields, params)
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) BulkSave(db *gorm.DB, fields []string, params []map[string]interface{}) error {
-		if db == nil {
-		db = GetDB()
-	}
+	func (t * ` + tableStruct + `) BulkSave(ctx context.Context, fields []string, params []map[string]interface{}) error {
+		db := GetDB(ctx)
 	return emysql.BulkSave(db, t.TableName(), fields, params)
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) Delete(db *gorm.DB, where string, args ...interface{}) error {
-		if db == nil {
-		db = GetDB()
-	}
+	func (t * ` + tableStruct + `) Delete(ctx context.Context, where string, args ...interface{}) error {
+		db := GetDB(ctx)
 	return db.Where(where, args...).Delete(&` + tableStruct + `{}).Error
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) Updates(db *gorm.DB, data map[string]interface{}, where string, args ...interface{}) (int64, error) {
-		if db == nil {
-		db = GetDB()
-	}
+	func (t * ` + tableStruct + `) Updates(ctx context.Context, data map[string]interface{}, where string, args ...interface{}) (int64, error) {
+		db := GetDB(ctx)
 	db = db.Model(&` + tableStruct + `{}).Where(where, args...).Updates(data)
 	return db.RowsAffected, db.Error
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) GetOne(where string, args ...interface{})(*` + tableStruct + `, error) {
+	func (t * ` + tableStruct + `) GetOne(ctx context.Context, where string, args ...interface{})(*` + tableStruct + `, error) {
 	var obj ` + tableStruct + `
-	return &obj, GetDB().Where(where, args...).Take(&obj).Error
+	return &obj, GetDB(ctx).Where(where, args...).Take(&obj).Error
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) GetFirst(order string, where string, args ...interface{})(*` + tableStruct + `, error) {
+	func (t * ` + tableStruct + `) GetFirst(ctx context.Context, order string, where string, args ...interface{})(*` + tableStruct + `, error) {
 	var obj ` + tableStruct + `
-	return &obj, GetDB().Where(where, args...).Order(order).Take(&obj).Error
+	return &obj, GetDB(ctx).Where(where, args...).Order(order).Take(&obj).Error
 }`)
 
 	buffer.WriteString(`
-	func (* ` + tableStruct + `) GetList(where string, args ...interface{}) ([]*` + tableStruct + `, error) {
+	func (* ` + tableStruct + `) GetList(ctx context.Context, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
 	var list []*` + tableStruct + `
-	return list, GetDB().Where(where, args...).Find(&list).Error
+	return list, GetDB(ctx).Where(where, args...).Find(&list).Error
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) GetListWithLimit(limit int, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
+	func (t * ` + tableStruct + `) GetListWithLimit(ctx context.Context, limit int, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
 	var list []*` + tableStruct + `
-	return list, GetDB().Where(where, args...).Limit(limit).Find(&list).Error
+	return list, GetDB(ctx).Where(where, args...).Limit(limit).Find(&list).Error
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) GetListOrder(order string, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
+	func (t * ` + tableStruct + `) GetListOrder(ctx context.Context, order string, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
 	var list []*` + tableStruct + `
-	return list,GetDB().Where(where, args...).Order(order).Find(&list).Error}`)
+	return list,GetDB(ctx).Where(where, args...).Order(order).Find(&list).Error}`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) GetListOrderLimit(order string, limit int, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
+	func (t * ` + tableStruct + `) GetListOrderLimit(ctx context.Context, order string, limit int, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
 	var list []*` + tableStruct + `
 	if limit == 0 || limit > 10000 {
 		limit = 10
 	}
-	return list,GetDB().Where(where, args...).Order(order).Limit(limit).Find(&list).Error}`)
+	return list,GetDB(ctx).Where(where, args...).Order(order).Limit(limit).Find(&list).Error}`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) GetListPage(pageNum, limit int, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
+	func (t * ` + tableStruct + `) GetListPage(ctx context.Context, pageNum, limit int, where string, args ...interface{}) ([]*` + tableStruct + `, error) {
 	var list []*` + tableStruct + `
 	offset := (pageNum - 1) * limit
-	return list, GetDB().Where(where, args...).Offset(offset).Limit(limit).Find(&list).Error
+	return list, GetDB(ctx).Where(where, args...).Offset(offset).Limit(limit).Find(&list).Error
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) GetCount(where string, args ...interface{}) (int64, error) {
+	func (t * ` + tableStruct + `) GetCount(ctx context.Context, where string, args ...interface{}) (int64, error) {
 	var count int64
-	return count, GetDB().Model(&` + tableStruct + `{}).Where(where, args...).Count(&count).Error
+	return count, GetDB(ctx).Model(&` + tableStruct + `{}).Where(where, args...).Count(&count).Error
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) GetSumInt64(sql string, args ...interface{}) (int64, error) {
+	func (t * ` + tableStruct + `) GetSumInt64(ctx context.Context, sql string, args ...interface{}) (int64, error) {
 	type sum struct {
 		Num int64 ` + "`" + `json:"num" gorm:"column:num"` + "`" + `
 	}
 	var obj sum
-	return obj.Num, GetDB().Raw(sql, args...).Scan(&obj).Error
+	return obj.Num, GetDB(ctx).Raw(sql, args...).Scan(&obj).Error
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) GetSumFloat64(sql string, args ...interface{}) (float64, error) {
+	func (t * ` + tableStruct + `) GetSumFloat64(ctx context.Context, sql string, args ...interface{}) (float64, error) {
 	type sum struct {
 		Num float64 ` + "`" + `json:"num" gorm:"column:num"` + "`" + `
 	}
 	var obj sum
-	return obj.Num, GetDB().Raw(sql, args...).Scan(&obj).Error
+	return obj.Num, GetDB(ctx).Raw(sql, args...).Scan(&obj).Error
 }`)
 
 	buffer.WriteString(`
-	func (t * ` + tableStruct + `) GetSumDecimal(sql string, args ...interface{}) (decimal.Decimal, error) {
+	func (t * ` + tableStruct + `) GetSumDecimal(ctx context.Context, sql string, args ...interface{}) (decimal.Decimal, error) {
 	type sum struct {
 		Num decimal.Decimal ` + "`" + `json:"num" gorm:"column:num"` + "`" + `
 	}
 	var obj sum
-	return obj.Num, GetDB().Raw(sql, args...).Scan(&obj).Error
+	return obj.Num, GetDB(ctx).Raw(sql, args...).Scan(&obj).Error
 }`)
 }
 
