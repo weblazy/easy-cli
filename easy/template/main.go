@@ -8,23 +8,23 @@ import (
 	"fmt"
 )
 
-func FromMain(projectName string, cmdList []string,pkgList string, buffer *bytes.Buffer) {
+func FromMain(projectName string, cmdList []string, pkgList string, buffer *bytes.Buffer) {
 	buffer.WriteString(`
 package main
 
 import (
 	"os"`)
-	buffer.WriteString(fmt.Sprintf("%s\n\"%s/common\"",pkgList,projectName))
+	buffer.WriteString(fmt.Sprintf("%s\n\"%s/common\"", pkgList, projectName))
 	buffer.WriteString(
-	`
+		`
 	"github.com/weblazy/easy/elog"
-	"github.com/sunmi-OS/gocore/v2/utils"
+	"github.com/weblazy/easy/print"
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
 	// 打印Banner
-	utils.PrintBanner(common.ProjectName)
+	print.PrintBanner(common.ProjectName)
 	// 配置cli参数
 	cliApp := cli.NewApp()
 	cliApp.Name = common.ProjectName
