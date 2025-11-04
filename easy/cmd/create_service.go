@@ -92,6 +92,11 @@ func creatService(c *cli.Context) error {
 	}
 
 	printHint("Run go mod tidy.")
+	resp, err = utils.Cmd("go", []string{"get", "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp@latest"})
+	if err != nil {
+		fmt.Println(resp)
+		panic(err)
+	}
 	resp, err = utils.Cmd("go", []string{"mod", "tidy"})
 	if err != nil {
 		fmt.Println(resp)
