@@ -65,13 +65,13 @@ require (
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-gonic/gin v1.8.1
 	github.com/robfig/cron/v3 v3.0.1
-	github.com/sunmi-OS/gocore/v2 v2.0.10
 	github.com/urfave/cli/v2 v2.3.0
 	github.com/weblazy/easy master
 	github.com/weblazy/gocore v1.8.0
-	google.golang.org/grpc v1.47.0
+	google.golang.org/grpc v1.64.0
 	google.golang.org/protobuf v1.28.0
 	gorm.io/gorm v1.23.5
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.63.0
 )
 
 `, config.Service.ProjectName))
@@ -198,7 +198,7 @@ func createModel(root, name string) {
 		// for _, v2 := range tables {
 		// tableName := v2.Name
 		// tableStruct := file.UnderlineToCamel(v2.Name)
-		// tableStr += "_ = GetDB().Set(\"gorm:table_options\", \"CHARSET=utf8mb4 comment='" + v2.Comment + "' AUTO_INCREMENT=1;\").AutoMigrate(&" + tableStruct + "{})\n"
+		// tableStr += "_ = GetDB(ctx).Set(\"gorm:table_options\", \"CHARSET=utf8mb4 comment='" + v2.Comment + "' AUTO_INCREMENT=1;\").AutoMigrate(&" + tableStruct + "{})\n"
 		// tabelPath := dir + "/" + tableName + ".go"
 		// fieldStr := ""
 		// fields := v2.Fields
